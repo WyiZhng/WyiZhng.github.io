@@ -13,7 +13,7 @@
 
 
 
-<title>Hexo</title>
+<title>个人博客构建分析 | Hexo</title>
 
 
 
@@ -203,7 +203,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title"></h1>
+            <h1 class="post-title">个人博客构建分析</h1>
             
                 <div class="post-meta">
                     
@@ -212,7 +212,7 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">April 17, 2025&nbsp;&nbsp;21:47:09</a>
+                        Date: <a href="#">April 17, 2025&nbsp;&nbsp;22:22:34</a>
                         </span>
                     
                     
@@ -221,8 +221,7 @@
         </header>
 
         <div class="post-content">
-            <p>title: 搭建个人博客技术分析<br>date: 2025-04-17 21:47:09<br>tags:[网页，前端]</p>
-<h2 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h2><p>突然突发奇想，想做一个个人博客来记录自己的学习记录，这样子也可以提高自己的总结能力。之前都是做存在硬盘或者U盘里的总结。这次就记在博客上。</p>
+            <h2 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h2><p>突然突发奇想，想做一个个人博客来记录自己的学习记录，这样子也可以提高自己的总结能力。之前都是做存在硬盘或者U盘里的总结。这次就记在博客上。</p>
 <h2 id="二、技术对比"><a href="#二、技术对比" class="headerlink" title="二、技术对比"></a>二、技术对比</h2><p>在收集个人博客实现技术的过程中看了大致两类：</p>
 <h3 id="（一）Hexo-GitHub-Pages"><a href="#（一）Hexo-GitHub-Pages" class="headerlink" title="（一）Hexo + GitHub Pages"></a>（一）Hexo + GitHub Pages</h3><p>就是我现在使用的方案，其特点如下</p>
 <p><strong>优点</strong>：</p>
@@ -304,7 +303,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat ~/.ssh/id_rsa.pub</span><br></pre></td></tr></table></figure>
 
 <p> 首次使用还须要确认并添加主机到本机SSH可信列表。若返回 Hi xxx! You’ve successfully  authenticated, but GitHub does not provide shell access. 内容，则证实添加成功。 </p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@github.com</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p> 登陆 Github 上添加刚刚生成的SSH key，按如下步骤添加，右上角点击头像-&gt; settings -&gt; SSH  and GPG keys，建立一个新的 SSH key, 标题随便，key 就填刚才生成那个，确认建立，这样在你 的 SSH keys 列表里就会看到你刚刚添加的密钥 </p>
 <p><img src="C:\Users\79533\AppData\Roaming\Typora\typora-user-images\1744899374031.png" alt="1744899374031"></p>
@@ -313,10 +312,10 @@
 <p>这一步！！！！！我是必须得按下面得git@github这一行就是被注释掉的这一行填写才可以hexo d部署成功！</p>
 <p>因为我使用了SSH！</p>
 <p> 第二要安装一个部署插件 hexo-deployer-git，打开“Git Bach”，输如以下指令 </p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p> 最后执行如下两条命令就能够部署上传啦，如下 g 是 generate 缩写，d 是 deploy 缩 写</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo g    </span><br><span class="line">hexo d    </span><br><span class="line"># 部署到Github上</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hexo g    </span><br><span class="line">hexo d    </span><br><span class="line"># 部署到Github上</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p> 这时用浏览器输入 用户名.github.io就可以访问刚才的网站啦 ！大功告成</p>
 
@@ -333,7 +332,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="http://example.com/2025/04/17/%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%8A%80%E6%9C%AF%E5%88%86%E6%9E%90/">http://example.com/2025/04/17/%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%8A%80%E6%9C%AF%E5%88%86%E6%9E%90/</a></span>
+                        <span><a href="http://example.com/2025/04/17/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%9E%84%E5%BB%BA%E5%88%86%E6%9E%90/">http://example.com/2025/04/17/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%9E%84%E5%BB%BA%E5%88%86%E6%9E%90/</a></span>
                     </p>
                 
                 
@@ -366,10 +365,8 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2025/04/17/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%9E%84%E5%BB%BA%E5%88%86%E6%9E%90/">个人博客构建分析</a>
             
-            
-            <a class="next" rel="next" href="/2025/04/17/page/">page</a>
+            <a class="next" rel="next" href="/2025/04/17/%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%E6%8A%80%E6%9C%AF%E5%88%86%E6%9E%90/"></a>
             
         </section>
 
