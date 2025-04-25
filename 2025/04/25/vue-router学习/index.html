@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="John Doe">
+
+
+
+
+
+<title>vue-router学习 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon1.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const pagebody = document.getElementsByTagName('body')[0]
+
+            function setTheme(status) {
+
+                if (status === 'dark') {
+                    window.sessionStorage.theme = 'dark'
+                    pagebody.classList.add('dark-theme');
+
+                } else if (status === 'light') {
+                    window.sessionStorage.theme = 'light'
+                    pagebody.classList.remove('dark-theme');
+                }
+            };
+
+            setTheme(window.sessionStorage.theme)
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">YI&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                <a class="menu-item" href="/archives">Posts</a>
+                
+                <a class="menu-item" href="/category">Categories</a>
+                
+                <a class="menu-item" href="/tag">Tags</a>
+                
+                <a class="menu-item" href="/about">About</a>
+                
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">YI&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">
+                    <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M4.5 17.27q-.213 0-.356-.145T4 16.768t.144-.356t.356-.143h15q.213 0 .356.144q.144.144.144.357t-.144.356t-.356.143zm0-4.77q-.213 0-.356-.144T4 11.999t.144-.356t.356-.143h15q.213 0 .356.144t.144.357t-.144.356t-.356.143zm0-4.77q-.213 0-.356-.143Q4 7.443 4 7.23t.144-.356t.356-.143h15q.213 0 .356.144T20 7.23t-.144.356t-.356.144z"/></svg>
+                    <svg class="close-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols Light by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="m12 12.708l-5.246 5.246q-.14.14-.344.15t-.364-.15t-.16-.354t.16-.354L11.292 12L6.046 6.754q-.14-.14-.15-.344t.15-.364t.354-.16t.354.16L12 11.292l5.246-5.246q.14-.14.345-.15q.203-.01.363.15t.16.354t-.16.354L12.708 12l5.246 5.246q.14.14.15.345q.01.203-.15.363t-.354.16t-.354-.16z"/></svg>
+                </div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                <a class="menu-item" href="/archives">Posts</a>
+                
+                <a class="menu-item" href="/category">Categories</a>
+                
+                <a class="menu-item" href="/tag">Tags</a>
+                
+                <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if (toggleMenu.classList.contains("active")) {
+            toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        } else {
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">vue-router学习</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">John Doe</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">April 25, 2025&nbsp;&nbsp;20:30:55</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><code>Vue3</code>-ROUTER学习</p>
+<h2 id="第一小节："><a href="#第一小节：" class="headerlink" title="第一小节："></a>第一小节：</h2><p>对于router\index.js中的代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> routes = [</span><br><span class="line">	    &#123;</span><br><span class="line">	        <span class="attr">path</span>: <span class="string">&quot;/&quot;</span>, <span class="comment">// http://localhost:5173</span></span><br><span class="line">	        <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&quot;../views/index.vue&quot;</span>)</span><br><span class="line">	    &#125;,</span><br><span class="line">	    &#123;</span><br><span class="line">	        <span class="attr">path</span>: <span class="string">&quot;/content&quot;</span>, <span class="comment">// http://localhost:5173/content</span></span><br><span class="line">	        <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&quot;../views/content.vue&quot;</span>)</span><br><span class="line">	    &#125;,</span><br><span class="line">	]</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> router = <span class="title function_">createRouter</span>(&#123;</span><br><span class="line">	    <span class="comment">//使用url的#符号之后的部分模拟url路径的变化,因为不会触发页面刷新,所以不需要服务端支持</span></span><br><span class="line">	    <span class="comment">//history: createWebHashHistory(), </span></span><br><span class="line">	    <span class="attr">history</span>: <span class="title function_">createWebHistory</span>(),</span><br><span class="line">	    routes</span><br><span class="line">	&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>是同</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> router = <span class="title function_">createRouter</span>(&#123;</span><br><span class="line">  <span class="attr">history</span>: <span class="title function_">createWebHistory</span>(<span class="keyword">import</span>.<span class="property">meta</span>.<span class="property">env</span>.<span class="property">BASE_URL</span>),</span><br><span class="line">  <span class="attr">routes</span>: [</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">path</span>: <span class="string">&#x27;/&#x27;</span>,</span><br><span class="line">      <span class="attr">name</span>: <span class="string">&#x27;home&#x27;</span>,</span><br><span class="line">      <span class="attr">component</span>: <span class="title class_">HomeView</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="attr">path</span>: <span class="string">&#x27;/about&#x27;</span>,</span><br><span class="line">      <span class="attr">name</span>: <span class="string">&#x27;about&#x27;</span>,</span><br><span class="line">      <span class="comment">// route level code-splitting</span></span><br><span class="line">      <span class="comment">// this generates a separate chunk (About.[hash].js) for this route</span></span><br><span class="line">      <span class="comment">// which is lazy-loaded when the route is visited.</span></span><br><span class="line">      <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;../views/AboutView.vue&#x27;</span>),</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> router</span><br></pre></td></tr></table></figure>
+
+<p>一样的效果，后面这个等于是更加便捷！</p>
+<p>而对于main.js中的</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">createApp</span>(<span class="title class_">App</span>).<span class="title function_">use</span>(router).<span class="title function_">mount</span>(<span class="string">&#x27;#app&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>和</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(<span class="title class_">App</span>)</span><br><span class="line">app.<span class="title function_">use</span>(<span class="title function_">createPinia</span>())</span><br><span class="line">app.<span class="title function_">use</span>(router)</span><br><span class="line">app.<span class="title function_">mount</span>(<span class="string">&#x27;#app&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>效果也是差不多的</p>
+<p>第一小节主要讲的是，如何创建安装和设置路由。</p>
+<h2 id="第二节配置路径别名和VScode路径提示"><a href="#第二节配置路径别名和VScode路径提示" class="headerlink" title="第二节配置路径别名和VScode路径提示"></a>第二节配置路径别名和VScode路径提示</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">把上面每一句的<span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;@/views/AboutView.vue&#x27;</span>),</span><br></pre></td></tr></table></figure>
+
+<p>..&#x2F;全部修改变为@&#x2F;！！！</p>
+<p>通过从vite.config.js中加入</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">resolve</span>: &#123;</span><br><span class="line">    <span class="attr">alias</span>: &#123;</span><br><span class="line">      <span class="string">&#x27;@&#x27;</span>: <span class="title function_">fileURLToPath</span>(<span class="keyword">new</span> <span class="title function_">URL</span>(<span class="string">&#x27;./src&#x27;</span>, <span class="keyword">import</span>.<span class="property">meta</span>.<span class="property">url</span>))</span><br><span class="line">    &#125;,</span><br></pre></td></tr></table></figure>
+
+<p>等于是更加便捷一点点，@直接指向了src目录！</p>
+<p>但是这个时候发现@后面不会自动跳转出来文件的路径，所以这个时候要解决树妖新键一个jsconfig.json里面代码是</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;compilerOptions&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;baseUrl&quot;</span>: <span class="string">&quot;.&quot;</span>,</span><br><span class="line">      <span class="string">&quot;paths&quot;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;@/*&quot;</span>: [<span class="string">&quot;src/*&quot;</span>] <span class="comment">// 配置 @ 符号指向 src 目录及其子目录</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>并且安装别名路径跳转插件实现路径跳转，ctrl+点击实现跳转。</p>
+<h2 id="第三节：查询字符串或者路径传递参数"><a href="#第三节：查询字符串或者路径传递参数" class="headerlink" title="第三节：查询字符串或者路径传递参数"></a>第三节：查询字符串或者路径传递参数</h2><p>通过 <a target="_blank" rel="noopener" href="http://localhost:5174/Login?id=200&title=%E7%BC%96%E7%A8%8B">http://localhost:5174/Login?id=200&amp;title=编程</a>    访问页面，如何获取页面数据，就是在Login.vue中加入</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">scrip</span> <span class="attr">setup</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">scrip</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  LOGIn页面 <span class="tag">&lt;<span class="name">hr</span>&gt;</span></span><br><span class="line">  id: &#123;&#123;$route.query.id&#125;&#125; <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">  title: &#123;&#123;$route.query.title&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">scoped</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>即可以，如下图</p>
+<p><img src="https://cdn.jsdelivr.net/gh/WyiZhng/ImgHosting/Blog-PIC/6.PNG" alt="如图"></p>
+<p>接下来路径z传参：</p>
+<p>在router下的index.js中加入</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">       <span class="attr">path</span>: <span class="string">&quot;/user/:id/name/:name&quot;</span>, <span class="comment">// 使用路径传递参数 http://localhost:5173/user/007/name/邓瑞</span></span><br><span class="line">       <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&quot;@/views/user.vue&quot;</span>)</span><br><span class="line">   &#125;,</span><br><span class="line">   &#123;</span><br><span class="line">       <span class="comment">//可选参数 name? 表示该参数不是必需的</span></span><br><span class="line">       <span class="attr">path</span>: <span class="string">&quot;/userHistory/:id/name/:name?&quot;</span>, <span class="comment">// http://localhost:5173/userHistory/007/name</span></span><br><span class="line">       <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&quot;@/views/user.vue&quot;</span>)</span><br><span class="line">   &#125;,</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>那么访问链接必须带id和name，对于前者来说</p>
+<p>对于后者name参数就是变成了可选参数。</p>
+<p>而如何访问路径参数呢？vue如下</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">demo\src\views\user.<span class="property">vue</span></span><br><span class="line">	&lt;script setup&gt;</span><br><span class="line"></span><br><span class="line">	&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">	&lt;template&gt;</span><br><span class="line">	    个人主页 - www.dengruicode.com &lt;hr&gt;</span><br><span class="line"></span><br><span class="line">	    id: &#123;&#123; $route.params.id &#125;&#125; &lt;br&gt;</span><br><span class="line">	    name: &#123;&#123; $route.params.name &#125;&#125;</span><br><span class="line">	&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">	&lt;style scoped&gt;</span><br><span class="line"></span><br><span class="line">	&lt;/style&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="第四节：-router-link、定义别名、定义路由名称、编程式导航"><a href="#第四节：-router-link、定义别名、定义路由名称、编程式导航" class="headerlink" title="第四节： router-link、定义别名、定义路由名称、编程式导航"></a>第四节： <strong>router-link、定义别名、定义路由名称、编程式导航</strong></h2><p> 在router中加入alias属性</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">        path: &quot;/&quot;,</span><br><span class="line">        //alias:&quot;/home&quot;, //定义别名 http://localhost:5173/home</span><br><span class="line">        alias:[&quot;/home&quot;,&quot;/index&quot;], // http://localhost:5173/home http://localhost:5173/index</span><br><span class="line">        // component: () =&gt; import(&quot;../views/index.vue&quot;)</span><br><span class="line">        component: () =&gt; import(&quot;@/views/index.vue&quot;)</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="http://localhost:5173/home">http://localhost:5173/home</a> <a target="_blank" rel="noopener" href="http://localhost:5173/index">http://localhost:5173/index</a>  <a target="_blank" rel="noopener" href="http://localhost:5173/%E9%83%BD%E5%8F%AF%E4%BB%A5%E8%AE%BF%E9%97%AE%E9%A6%96%E9%A1%B5%E3%80%82">http://localhost:5173/都可以访问首页。</a></p>
+<p>routerlink在页面中绑定其他页面的超链接</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">	    首页 - dengruicode.<span class="property">com</span> &lt;hr&gt;</span><br><span class="line"></span><br><span class="line">	    <span class="language-xml"><span class="tag">&lt;<span class="name">router-link</span> <span class="attr">to</span>=<span class="string">&quot;/content?id=100&amp;title=邓瑞编程&quot;</span>&gt;</span>查询字符串传参<span class="tag">&lt;/<span class="name">router-link</span>&gt;</span></span> &lt;br&gt;</span><br><span class="line">	    <span class="language-xml"><span class="tag">&lt;<span class="name">router-link</span> <span class="attr">to</span>=<span class="string">&quot;/user/007/name/邓瑞&quot;</span>&gt;</span>路径传参<span class="tag">&lt;/<span class="name">router-link</span>&gt;</span></span> &lt;br&gt;</span><br><span class="line"></span><br><span class="line">	    &lt;!-- 动态属性绑定 --&gt;</span><br><span class="line">	    <span class="language-xml"><span class="tag">&lt;<span class="name">router-link</span> <span class="attr">:to</span>=<span class="string">&quot;&#123; path: &#x27;/content&#x27;, query: &#123; id: 200, title: &#x27;邓瑞&#x27; &#125; &#125;&quot;</span>&gt;</span>查询字符串传参 - 动态属性绑定<span class="tag">&lt;/<span class="name">router-link</span>&gt;</span></span> &lt;br&gt;</span><br><span class="line">	    <span class="language-xml"><span class="tag">&lt;<span class="name">router-link</span> <span class="attr">:to</span>=<span class="string">&quot;&#123; path: `/user/$&#123;userId&#125;/name/$&#123;userName&#125;` &#125;&quot;</span>&gt;</span>路径传参 - 动态属性绑定<span class="tag">&lt;/<span class="name">router-link</span>&gt;</span></span> &lt;br&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>编程式导航，通过按键跳转：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&lt;script setup&gt;</span><br><span class="line">	    <span class="keyword">import</span> &#123; useRouter &#125; <span class="keyword">from</span> <span class="string">&#x27;vue-router&#x27;</span>;</span><br><span class="line">	    <span class="keyword">const</span> router = <span class="title function_">useRouter</span>()</span><br><span class="line"></span><br><span class="line">	    <span class="keyword">let</span> userId = <span class="number">100</span></span><br><span class="line">	    <span class="keyword">let</span> userName = <span class="string">&quot;邓瑞&quot;</span></span><br><span class="line"></span><br><span class="line">	    <span class="keyword">const</span> <span class="title function_">goTo</span> = (<span class="params"></span>)=&gt; &#123;</span><br><span class="line">	        <span class="comment">//router.push(&quot;/user/007/name/邓瑞&quot;)</span></span><br><span class="line">	        <span class="comment">//router.push(&#123; path: &#x27;/content&#x27;, query: &#123; id: 200, title: &#x27;邓瑞&#x27; &#125; &#125;)</span></span><br><span class="line">	        router.<span class="title function_">push</span>(&#123; <span class="attr">name</span>: <span class="string">&#x27;history&#x27;</span>, <span class="attr">params</span>: &#123; <span class="attr">id</span>: <span class="string">&#x27;300&#x27;</span>, <span class="attr">name</span>: <span class="string">&#x27;邓瑞编程&#x27;</span> &#125;&#125;)</span><br><span class="line">	    &#125;</span><br><span class="line">	&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">	&lt;template&gt;</span><br><span class="line">	    首页 - dengruicode.com &lt;hr&gt;</span><br><span class="line"></span><br><span class="line">	    &lt;!-- 定义路由名称 --&gt;</span><br><span class="line">	    &lt;router-link :to=&quot;&#123; name: &#x27;history&#x27;, params: &#123; id: &#x27;300&#x27;, name: &#x27;邓瑞编程&#x27; &#125;&#125;&quot;&gt;路径传参 - 定义路由名称&lt;/router-link&gt; &lt;br&gt;</span><br><span class="line"></span><br><span class="line">	    &lt;!-- 编程式导航 --&gt;</span><br><span class="line">	    &lt;button @click=&quot;goTo()&quot;&gt;编程式导航&lt;/button&gt;</span><br><span class="line">	&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">	&lt;style scoped&gt;</span><br><span class="line"></span><br><span class="line">	&lt;/style&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="第五节：嵌套路由共享组件"><a href="#第五节：嵌套路由共享组件" class="headerlink" title="第五节：嵌套路由共享组件"></a>第五节：嵌套路由共享组件</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">      <span class="attr">path</span>: <span class="string">&quot;/vip&quot;</span>, </span><br><span class="line">      <span class="attr">component</span>: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&quot;@/views/vip.vue&quot;</span>),</span><br><span class="line">      <span class="attr">children</span>: [ <span class="comment">// 子路由</span></span><br><span class="line">          &#123;</span><br><span class="line">              <span class="attr">path</span>: <span class="string">&#x27;&#x27;</span>, <span class="comment">// 默认页 http://localhost:5173/vip</span></span><br><span class="line">              <span class="attr">component</span>: <span class="keyword">import</span>(<span class="string">&quot;@/views/vip/default.vue&quot;</span>)</span><br><span class="line">          &#125;,</span><br><span class="line">          &#123;</span><br><span class="line">              <span class="attr">path</span>: <span class="string">&#x27;order&#x27;</span>, <span class="comment">// 会员订单 http://localhost:5173/vip/order</span></span><br><span class="line">              <span class="attr">component</span>: <span class="keyword">import</span>(<span class="string">&quot;@/views/vip/order.vue&quot;</span>)</span><br><span class="line">          &#125;,</span><br><span class="line">          &#123;</span><br><span class="line">              <span class="attr">path</span>: <span class="string">&#x27;info&#x27;</span>, <span class="comment">// 会员资料 http://localhost:5173/vip/info</span></span><br><span class="line">              <span class="attr">component</span>: <span class="keyword">import</span>(<span class="string">&quot;@/views/vip/info.vue&quot;</span>)</span><br><span class="line">          &#125;</span><br><span class="line">      ]</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这个比较容易理解，不做过多解释</p>
+<h2 id="第六节：重定向"><a href="#第六节：重定向" class="headerlink" title="第六节：重定向"></a>第六节：重定向</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">            <span class="attr">path</span>: <span class="string">&quot;/svip&quot;</span>, <span class="comment">// http://localhost:5173/svip</span></span><br><span class="line">            <span class="comment">//redirect: &quot;/vip&quot; // 重定向</span></span><br><span class="line">            <span class="attr">redirect</span>: &#123; <span class="attr">name</span>: <span class="string">&#x27;history&#x27;</span>, <span class="attr">params</span>: &#123; <span class="attr">id</span>: <span class="string">&#x27;100&#x27;</span>, <span class="attr">name</span>: <span class="string">&#x27;David&#x27;</span> &#125; &#125;</span><br><span class="line">        &#125;,</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>不同与前面的别名，重定向访问的时候，其地址是不变得，别名的话就是变成一个新的地址！</p>
+<h2 id="第七节：全局前置守卫"><a href="#第七节：全局前置守卫" class="headerlink" title="第七节：全局前置守卫"></a>第七节：全局前置守卫</h2><p>举个例子，我们常见的淘宝买东西，我们需要先登录才能进入我们的购物车，那么这就涉及到了一个前置访问，我们需要先在Login界面登录以后我们才可以跑到主页</p>
+<p>在main.js的里面插入如下代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">demo\src\main.<span class="property">js</span></span><br><span class="line">	<span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line">	<span class="keyword">import</span> <span class="title class_">App</span> <span class="keyword">from</span> <span class="string">&#x27;./App.vue&#x27;</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">import</span> router <span class="keyword">from</span> <span class="string">&#x27;./router&#x27;</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//createApp(App).mount(&#x27;#app&#x27;)</span></span><br><span class="line">	<span class="keyword">const</span> app = <span class="title function_">createApp</span>(<span class="title class_">App</span>)</span><br><span class="line">	app.<span class="title function_">use</span>(router)</span><br><span class="line"></span><br><span class="line">	<span class="comment">//全局前置守卫</span></span><br><span class="line">	router.<span class="title function_">beforeEach</span>(<span class="function">(<span class="params">to, <span class="keyword">from</span>, next</span>) =&gt;</span> &#123;</span><br><span class="line">	    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;to:&quot;</span>,to) <span class="comment">//即将进入的路由的信息</span></span><br><span class="line">	    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;from:&quot;</span>,<span class="keyword">from</span>) <span class="comment">//当前即将离开的路由信息</span></span><br><span class="line"></span><br><span class="line">	    <span class="title function_">next</span>()</span><br><span class="line"></span><br><span class="line">	    <span class="comment">/*</span></span><br><span class="line"><span class="comment">	        if(to.name == &quot;history&quot;)&#123;</span></span><br><span class="line"><span class="comment">	            next(false) //拦截</span></span><br><span class="line"><span class="comment">	        &#125;else&#123;</span></span><br><span class="line"><span class="comment">	            next() //继续</span></span><br><span class="line"><span class="comment">	        &#125;</span></span><br><span class="line"><span class="comment">	    */</span></span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	app.<span class="title function_">mount</span>(<span class="string">&#x27;#app&#x27;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>  if(to.name &#x3D;&#x3D; “history”){<br>                next(false) &#x2F;&#x2F;拦截<br>            }else{<br>                next() &#x2F;&#x2F;继续<br>            }</p>
+<p>判断从什么页面来的。符合的话才可以进行访问新的页面！</p>
+<p>学习原链接： <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1xt421h7LC?spm_id_from=333.788.videopod.episodes&vd_source=4567983f42d487224b8cccf78091be5e&p=7">7.全局前置守卫_哔哩哔哩_bilibili</a> </p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>John Doe</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2025/04/25/vue-router%E5%AD%A6%E4%B9%A0/">http://example.com/2025/04/25/vue-router%E5%AD%A6%E4%B9%A0/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2025/04/17/%E5%88%9B%E5%BB%BA%E5%8D%9A%E5%AE%A2%E6%8A%80%E6%9C%AF%E5%88%86%E6%9E%90/">创建博客技术分析</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© John Doe | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
