@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="John Doe">
+
+
+
+
+
+<title>系统框架整理1 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon1.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const pagebody = document.getElementsByTagName('body')[0]
+
+            function setTheme(status) {
+
+                if (status === 'dark') {
+                    window.sessionStorage.theme = 'dark'
+                    pagebody.classList.add('dark-theme');
+
+                } else if (status === 'light') {
+                    window.sessionStorage.theme = 'light'
+                    pagebody.classList.remove('dark-theme');
+                }
+            };
+
+            setTheme(window.sessionStorage.theme)
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">YI&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                <a class="menu-item" href="/archives">Posts</a>
+                
+                <a class="menu-item" href="/category">Categories</a>
+                
+                <a class="menu-item" href="/tag">Tags</a>
+                
+                <a class="menu-item" href="/about">About</a>
+                
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">YI&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">
+                    <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M4.5 17.27q-.213 0-.356-.145T4 16.768t.144-.356t.356-.143h15q.213 0 .356.144q.144.144.144.357t-.144.356t-.356.143zm0-4.77q-.213 0-.356-.144T4 11.999t.144-.356t.356-.143h15q.213 0 .356.144t.144.357t-.144.356t-.356.143zm0-4.77q-.213 0-.356-.143Q4 7.443 4 7.23t.144-.356t.356-.143h15q.213 0 .356.144T20 7.23t-.144.356t-.356.144z"/></svg>
+                    <svg class="close-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols Light by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="m12 12.708l-5.246 5.246q-.14.14-.344.15t-.364-.15t-.16-.354t.16-.354L11.292 12L6.046 6.754q-.14-.14-.15-.344t.15-.364t.354-.16t.354.16L12 11.292l5.246-5.246q.14-.14.345-.15q.203-.01.363.15t.16.354t-.16.354L12.708 12l5.246 5.246q.14.14.15.345q.01.203-.15.363t-.354.16t-.354-.16z"/></svg>
+                </div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                <a class="menu-item" href="/archives">Posts</a>
+                
+                <a class="menu-item" href="/category">Categories</a>
+                
+                <a class="menu-item" href="/tag">Tags</a>
+                
+                <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if (toggleMenu.classList.contains("active")) {
+            toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        } else {
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">系统框架整理1</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">John Doe</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">May 12, 2025&nbsp;&nbsp;9:31:13</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>这篇主要来让自己理一理系统项目的框架</p>
+<h2 id="1、database-api和storage"><a href="#1、database-api和storage" class="headerlink" title="1、database&#x2F;api和storage"></a>1、database&#x2F;api和storage</h2><h3 id="1-1-storage"><a href="#1-1-storage" class="headerlink" title="1.1 storage"></a>1.1 storage</h3><p>其中基于<strong>storage</strong>下创建许多函数用于后面数据处理的，数据储存的函数，首先是定义一初始储存路径。其中包括：</p>
+<p>1、账号加载，读取账号文件看账号中有没有对于账号文件存在，没有返回空有就返回对应json。</p>
+<p>2、保存账号，即是比如在注册api中引入保存账号信息功能，把账号信息写入accounts.json中。</p>
+<p>3、保存用户头像，将用户头像的路径写入，并且返回用户名。</p>
+<p>4、保存用户信息，用用户id定位用户储存文件，之后通过dict格式去更新用户信息。</p>
+<p>5、加载用户信息，指定输入为用户id定位，输出为可选的dict格式文件。其中错误返回有三种：用户不存在，格式错误和加载用户时出错。</p>
+<p>6、保存图片， 将图片数据保存到本地主要是保存路径为主，并返回一个唯一的图片 ID。</p>
+<p>7、保存报告，生成报告时间，以及统一报告命名格式，之后写入储存。返回报告id。</p>
+<p>8、加载报告，协调后端和数据库，从数据库中提出对应报告，随后将报告返回给前端。</p>
+<p>9、返回用户报告，用于用户报告历史展示界面，通过去辨别用户是患者还是医生。在报告信息中的关键信息中提出符合患者id或者是医生id的对应报告。</p>
+<p>10、报告评论加载，输入是报告ID，输出对应评论列表。</p>
+<p>11、保存报告结果图，将报告结果照片的id，append在报告的后面。方便后面读取对应照片。</p>
+<p>12、获取报告图片，输入是图片ID，输出对应图片流信息。</p>
+<p>13、更新报告状态如果算法端接口返回结果了，生成对应diagonal了，那么我就会更改报告状态为生成。</p>
+<p>14、删除报告，输入是报告ID，输出对bool判断是否删除成功。</p>
+<p>15、保存医生详细信息，输入是医生ID。</p>
+<p>16、加载展示医生详细信息，输入是医生ID，输出对应信息字典。</p>
+<h3 id="1-2-api"><a href="#1-2-api" class="headerlink" title="1.2 api"></a>1.2 api</h3><p>1、判断是否为医生，返回bool类型值。</p>
+<p>2、添加报告，输入是对应报告的患者和医生，通过上面的报告储存，添加报告到数据库中。</p>
+<p>3、获取对应报告，用的上面的函数。</p>
+<p>4、查找信息。</p>
+<p>5、删除报告。</p>
+<p>6、更新报告内容，通过上面的报告储存，添加报告到数据库中。</p>
+<p>7、更新头像。</p>
+<p>8、更新照片。</p>
+<p>9、添加个人详细信息。</p>
+<p>10、查找指定账户。</p>
+<p>11、储存账户。</p>
+<h3 id="二、api-common"><a href="#二、api-common" class="headerlink" title="二、api&#x2F;common"></a>二、api&#x2F;common</h3><p>其次看到api下的common为统用接口，写这两个接口的目的是为了方便其他接口调用</p>
+<p>这两个接口 &#x2F;api&#x2F;image 和 &#x2F;api&#x2F;image&#x2F;get 是一个图片上传和获取的功能组合，通常用于用户上传图像数据并在之后查看或下载图像。下面逐一介绍：</p>
+<p>接口一：image</p>
+<p>功能：上传图片返回图片id</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">接收表单文件：使用 form = await request.form() 读取前端上传的表单数据，其中 file = form.get(&quot;file&quot;) 提取了上传的文件对象。</span><br><span class="line"></span><br><span class="line">鉴权：从请求头中读取 token：</span><br><span class="line"></span><br><span class="line">python</span><br><span class="line">复制</span><br><span class="line">编辑</span><br><span class="line">token = request.headers.get(&quot;token&quot;, default=None)</span><br><span class="line">如果没有提供 token，返回错误代码 34 和提示“权限不足”。</span><br><span class="line"></span><br><span class="line">用户认证：通过 JWT 解析函数 resolveAccountJwt(token) 提取出当前用户账号。</span><br><span class="line"></span><br><span class="line">上传图片：调用 uploadImage(file.filename, await file.read()) 上传图片，并返回一个 image_id。</span><br><span class="line"></span><br><span class="line">返回图片 ID：用 ImageResponse(image=image_id) 形式返回，方便前端后续通过该 ID 下载。</span><br></pre></td></tr></table></figure>
+
+<p>接口二：image&#x2F;get</p>
+<p>功能：通过图片id获取图片数据流</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">接收参数：request 是继承自 TokenRequest 的 GetImageRequest，里面包含 token 和图片的 id。</span><br><span class="line"></span><br><span class="line">鉴权与验证：</span><br><span class="line"></span><br><span class="line">使用 resolveAccountJwt(request.token) 验证身份并提取用户信息。</span><br><span class="line"></span><br><span class="line">加载图片数据：通过 load_image(request.id) 获取图像数据。</span><br><span class="line"></span><br><span class="line">判断是否为空：</span><br><span class="line"></span><br><span class="line">如果找不到对应 ID 的图像数据，返回一个默认图片 default.png。</span><br><span class="line"></span><br><span class="line">返回图片流：</span><br><span class="line"></span><br><span class="line">成功获取到图像数据后，使用 StreamingResponse([image_data]) 返回字节流（适用于浏览器显示或下载）。</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-api-user"><a href="#2-api-user" class="headerlink" title="2 api&#x2F;user"></a>2 api&#x2F;user</h2><h3 id="2-1-login"><a href="#2-1-login" class="headerlink" title="2.1 login"></a>2.1 login</h3><p>创建几个类的登录请求，包含里面的用户名，密码以及类型，生成token的类。</p>
+<p>其中包含两个接口：一个是登录接口，一个是注册接口</p>
+<p>登录：首先是载入账号信息，之后再账号信息中查找用户名字。之后验证对应账号密码是否对的上。可以返回JWT令牌。</p>
+<p>这边引入一个JWT</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> jwt <span class="keyword">import</span> encode, decode</span><br><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">makeAccountJwt</span>(<span class="params">account: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    secret = <span class="string">&quot;this_is_the_secret&quot;</span></span><br><span class="line">    payload = &#123;</span><br><span class="line">        <span class="string">&quot;account&quot;</span>: account,</span><br><span class="line">        <span class="string">&quot;exp&quot;</span>: datetime.datetime.now() + datetime.timedelta(days=<span class="number">30</span>),</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> encode(payload, secret, algorithm=<span class="string">&#x27;HS256&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">resolveAccountJwt</span>(<span class="params">token: <span class="built_in">str</span></span>) -&gt; <span class="built_in">dict</span>:</span><br><span class="line">    secret = <span class="string">&quot;this_is_the_secret&quot;</span></span><br><span class="line">    <span class="keyword">return</span> decode(token, secret, algorithms=<span class="string">&#x27;HS256&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    token = makeAccountJwt(<span class="string">&quot;gsycl2004&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(token)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这段代码演示了如何使用 Python 的 PyJWT 库来生成和验证 JWT（JSON Web Token）令牌。</p>
+<p>主要功能</p>
+<ol>
+<li>makeAccountJwt(account: str) -&gt; str<br>作用：为指定账户生成 JWT 令牌</li>
+</ol>
+<p>参数：</p>
+<p>account：要编码到令牌中的账户名（字符串）</p>
+<p>返回值：JWT 令牌字符串</p>
+<p>实现细节：</p>
+<p>使用固定密钥 “this_is_the_secret”</p>
+<p>令牌有效载荷(payload)包含：</p>
+<p>account：账户名</p>
+<p>exp：过期时间（当前时间 + 30天）</p>
+<ol start="2">
+<li>resolveAccountJwt(token: str) -&gt; dict<br>作用：解析验证 JWT 令牌</li>
+</ol>
+<p>参数：</p>
+<p>token：要解析的 JWT 令牌字符串</p>
+<p>返回值：解码后的令牌内容（字典形式）</p>
+<p>实现细节：</p>
+<p>使用相同的固定密钥验证令牌</p>
+<p>会自动检查令牌是否过期</p>
+<p>测试部分<br>当直接运行这个脚本时：</p>
+<p>会为账户 “gsycl2004” 生成一个令牌</p>
+<p>打印出生成的令牌！</p>
+<p>所以login中通过jwt制作了一个token，并且返回生成的token。</p>
+<p>接下来是注册register接口：</p>
+<p>用到了database中的save_account函数，保存账号信息到数据库，返回token。</p>
+<h3 id="2-2-info"><a href="#2-2-info" class="headerlink" title="2.2 info"></a>2.2 info</h3><p>info中第一个接口为user，功能是查询用户是否存在，因为token加密的时候将用户名也添加进入用户系统，那我就需要判断，这个token解码出来的用户是否存在于我的数据库中，如果用户存在存在返回用户数据，不存在返回用户不存在。</p>
+<p>第二节接口info这 这个 FastAPI 路由接口是用来获取用户详细信息的。当客户端发送一个 POST 请求到 <code>/api/info</code> 时，服务端会先解析请求中包含的 JWT 令牌来验证用户身份，从中提取出用户名。接着系统会根据这个用户名去查询用户的详细信息，如果查询不到用户数据，就会返回一个错误响应，提示”用户没有设置信息”并附带状态码 33，同时会在响应中带上基本的用户名信息。如果能成功查询到用户数据，就会把这些用户详细信息按照 Form 的数据结构进行封装，然后返回给客户端。整个过程实现了基于令牌认证的用户信息查询功能，既保证了接口的安全性，又能根据用户是否存在详细信息返回不同的响应格式。 </p>
+<p>第三个接口submitinfo: 当客户端向 <code>/api/submitInfo</code> 发送 POST 请求时，服务端首先会从请求中提取 JWT 令牌，通过解析这个令牌获取当前登录的用户名。然后接口会处理请求中的表单数据，特别是将表单中的生日日期（birth字段）从 Python 的 datetime 对象转换为 ISO 格式的字符串，这样做的目的是为了让数据符合 JSON 的格式要求。接着，接口会将整个表单数据转换为字典格式，并调用保存用户详情的函数，把这些数据与用户名关联存储到数据库中。最后，接口返回一个空的成功响应，表示用户信息已成功提交并保存。整个过程实现了用户信息的验证、格式转换和持久化存储，确保数据能够被正确地保存并在后续查询中使用。 </p>
+<p>第四个接口上传头像：首先客户端会带着 JWT 令牌和头像图片的 ID 发起 POST 请求。服务端收到请求后，会先创建一个新的数据库会话（session），然后解析 JWT 令牌获取当前登录的用户名。</p>
+<p>接着接口会查询该用户是否已有详细信息记录：</p>
+<p>如果查询不到用户详情（detail 为 None），就会新建一个 UserDetail 对象，并以用户名作为 ID</p>
+<p>如果已有记录，就直接使用现有记录</p>
+<p>然后接口会去图片表中查询请求中指定的图片 ID 对应的图片记录。找到后，将这个图片对象关联到用户的 detail 记录上，具体是通过设置 detail.image &#x3D; image 来实现的。</p>
+<p>最后提交事务（session.commit()）保存这个关联关系，并返回一个空的成功响应。整个过程确保了用户和头像图片的正确关联，并且如果用户是第一次设置信息，会自动创建基础记录。</p>
+<p>第五个是寻找头像，并且返回头像流展示</p>
+<h3 id="2-3-report"><a href="#2-3-report" class="headerlink" title="2.3 report"></a>2.3 report</h3><p>submitreport:</p>
+<p> 这个 <code>/api/submitReport</code> 接口是一个用于提交医疗检查报告的 POST 接口，它会先通过解析请求中的 JWT 令牌来验证用户身份并获取用户名，然后构建一个包含完整报告信息的字典对象，其中包含了提交用户、负责医生、当前日期作为提交时间、初始状态设为”Checking”表示待检查、相关的医学影像数据，以及预留但初始为空的诊断相关字段（包括诊断内容、诊断医生、诊断时间和诊断结果），最后调用 <code>save_report</code> 函数将这些结构化数据保存到数据库中，并返回一个空的成功响应表示报告已成功提交。整个流程不仅实现了基本的报告提交功能，还通过精心设计的数据结构为后续的诊断流程预留了完善的状态管理字段，包括自动记录提交时间、初始化报告状态、关联用户和医生信息等，确保了报告数据的完整性和可追溯性。 </p>
+<p>getreport:</p>
+<p> 这个 <code>/api/getReports</code> 接口用于获取医疗检查报告列表，其完整工作流程如下：服务端首先会解析请求中的 JWT 令牌以验证用户身份并提取用户名，然后根据用户名查询账户信息以确定用户类型（如普通用户或医生等不同角色），接着调用 <code>get_user_reports</code> 函数获取该用户的原始报告数据（根据用户类型可能返回不同范围的报告），在返回响应前会对每条报告数据进行格式处理，特别是将字符串格式的提交时间（submitTime）转换为日期对象，同时使用异常捕获机制确保单条报告数据处理失败时不会影响整个请求，最后将所有有效报告数据封装成 Report 对象列表并通过 ReportResponse 返回给客户端，整个流程既保证了数据安全性又提供了良好的容错机制，使得前端能够获取到规范化的报告数据。 </p>
+<p>reportdelete:</p>
+<p>这个 <code>/api/report/delete</code> 接口用于删除医疗检查报告，其完整处理流程如下：首先通过解析请求头中的 JWT 令牌验证用户身份并获取用户名，然后根据请求参数中的报告 ID 加载对应的报告数据。如果找不到指定报告，则立即返回 404 错误响应；找到报告后会进行严格的权限验证，只有当请求用户是该报告的提交用户(user)或负责医生(doctor)时才允许执行删除操作，否则返回 403 未授权错误。通过权限检查后，系统会调用删除功能，若删除成功则返回空响应，若删除过程中出现异常则返回 500 服务器错误。这种设计既确保了数据安全性，通过双重身份验证（用户或医生）来保护报告数据不被未授权删除，又提供了清晰的错误反馈机制，包括报告不存在、无操作权限和服务器错误等不同场景的区分处理。</p>
+<p>reportdetail:</p>
+<p> 这个 <code>/api/report/detail</code> 接口用于获取医疗报告的详细信息，其完整处理流程如下：首先通过解析请求中的 JWT 令牌验证用户身份并获取用户名，然后根据请求参数中的报告 ID 加载对应的报告数据，如果找不到指定报告则返回 404 错误响应。获取到报告数据后，系统会将字符串格式的提交时间转换为日期对象，同时查询并加载该报告的所有评论数据，将每条评论数据封装成 CommentModel 对象列表。最后将所有报告详情数据和评论列表整合到 ReportDetailResponse 响应对象中返回给客户端。在整个处理过程中，系统通过异常捕获机制确保任何数据处理错误都能被捕获并转换为 500 服务器错误响应，同时保持了清晰的错误信息反馈。这种设计既保证了接口的健壮性，又能提供完整的报告详情和关联评论数据，方便前端展示报告的所有相关信息。 </p>
+<p>submit:</p>
+<p> 首先通过解析 JWT 令牌获取当前操作医生的用户名，然后加载指定 ID 的检查报告数据，如果报告不存在则返回 404 错误。接着进行严格的权限验证，确保只有该报告指定的负责医生（report_data 中的 doctor 字段）才能提交诊断结果，否则返回 403 未授权错误。通过验证后，系统会更新报告数据，将请求中的诊断内容（diagnose）写入报告，并将报告状态标记为已完成（ReportStatus.Completed）。最后先保存更新后的报告数据再删除原报告（此处 delete_report 的调用可能需要确认其必要性，通常更新后直接保存即可），返回空响应表示操作成功。整个流程特别注重医疗数据的安全性，通过医生身份与报告绑定关系的严格校验，确保只有指定医生才能提交诊断结果，同时完整记录了诊断信息并更新了报告状态，实现了诊断流程的闭环管理。 </p>
+<h2 id="3api-doctor"><a href="#3api-doctor" class="headerlink" title="3api&#x2F;doctor"></a>3api&#x2F;doctor</h2><p>其接口大部分与用户接口一样，列出医生列表、修改信息、设置信息、上传信息等。</p>
+<p>所以理解了user的api接口，doctor对应的接口也是都能理解。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>John Doe</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2025/05/12/%E7%B3%BB%E7%BB%9F%E6%A1%86%E6%9E%B6%E6%95%B4%E7%90%861/">http://example.com/2025/05/12/%E7%B3%BB%E7%BB%9F%E6%A1%86%E6%9E%B6%E6%95%B4%E7%90%861/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2025/04/25/vue-router%E5%AD%A6%E4%B9%A0/">vue-router学习</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© John Doe | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
