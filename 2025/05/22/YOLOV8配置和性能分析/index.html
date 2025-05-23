@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="John Doe">
+
+
+
+
+
+<title>YOLOV8配置和性能分析 | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon1.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const pagebody = document.getElementsByTagName('body')[0]
+
+            function setTheme(status) {
+
+                if (status === 'dark') {
+                    window.sessionStorage.theme = 'dark'
+                    pagebody.classList.add('dark-theme');
+
+                } else if (status === 'light') {
+                    window.sessionStorage.theme = 'light'
+                    pagebody.classList.remove('dark-theme');
+                }
+            };
+
+            setTheme(window.sessionStorage.theme)
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">YI&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                <a class="menu-item" href="/archives">Posts</a>
+                
+                <a class="menu-item" href="/category">Categories</a>
+                
+                <a class="menu-item" href="/tag">Tags</a>
+                
+                <a class="menu-item" href="/about">About</a>
+                
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">YI&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">
+                    <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M4.5 17.27q-.213 0-.356-.145T4 16.768t.144-.356t.356-.143h15q.213 0 .356.144q.144.144.144.357t-.144.356t-.356.143zm0-4.77q-.213 0-.356-.144T4 11.999t.144-.356t.356-.143h15q.213 0 .356.144t.144.357t-.144.356t-.356.143zm0-4.77q-.213 0-.356-.143Q4 7.443 4 7.23t.144-.356t.356-.143h15q.213 0 .356.144T20 7.23t-.144.356t-.356.144z"/></svg>
+                    <svg class="close-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols Light by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="m12 12.708l-5.246 5.246q-.14.14-.344.15t-.364-.15t-.16-.354t.16-.354L11.292 12L6.046 6.754q-.14-.14-.15-.344t.15-.364t.354-.16t.354.16L12 11.292l5.246-5.246q.14-.14.345-.15q.203-.01.363.15t.16.354t-.16.354L12.708 12l5.246 5.246q.14.14.15.345q.01.203-.15.363t-.354.16t-.354-.16z"/></svg>
+                </div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                <a class="menu-item" href="/archives">Posts</a>
+                
+                <a class="menu-item" href="/category">Categories</a>
+                
+                <a class="menu-item" href="/tag">Tags</a>
+                
+                <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if (toggleMenu.classList.contains("active")) {
+            toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        } else {
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">YOLOV8配置和性能分析</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">John Doe</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">May 22, 2025&nbsp;&nbsp;23:20:15</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="一、性能分析："><a href="#一、性能分析：" class="headerlink" title="一、性能分析："></a>一、性能分析：</h1><h2 id="results-png：训练总图要略"><a href="#results-png：训练总图要略" class="headerlink" title="results.png：训练总图要略"></a>results.png：训练总图要略</h2><p> 这张图片包含训练过程中的各种评估指标，比如损失函数、精度、召回率、mAP等的图表绘制。这个图表可以直观地看到模型训练过程中性能的变化情况。 </p>
+<p><img src="https://cdn.jsdelivr.net/gh/WyiZhng/ImgHosting/Blog-PIC/7.PNG"></p>
+<p>我们先看前3列:</p>
+<ul>
+<li><code>train/box_loss</code>和<code>val/box_loss</code></li>
+<li><code>train/cls_loss</code>和<code>val/cls_loss</code></li>
+<li><code>train/dfl_loss</code>和<code>val/dfl_loss</code></li>
+</ul>
+<p>前面的<code>train</code>表示训练集，<code>val</code>是验证集。训练集是用于训练学习的，相当于书本的例题。而验证集则用于考试，相当于试卷的试题。学得好不一定就考得好，主要还得看考题是不是有关联性。不过他们更重要的相同点，好像在于都有<code>loss</code>。</p>
+<h3 id="loss"><a href="#loss" class="headerlink" title="loss"></a>loss</h3><p><code>loss</code>是算法中一个常见的概念。翻译成“损失”这个词，其实很形象。生活中，对于能量转化，我们常常用到损失。我们说100单位的电能转化为80单位的动能，能量损失了20%。如果实现了百分百转化，那么损失就是0。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/WyiZhng/ImgHosting/Blog-PIC/8.PNG"></p>
+<p>对于训练集和验证集，AI本身是知道这个区域标的是什么，位置在哪儿。因此，它会先猜测结论，然后跟正确答案做对比。它的猜测行为称为“推理”或者“预测”。它自己的推理结果和人工标记的答案之间的差异，称为“损失”。那么，损失越小越好，损失为0则说明AI的推理和正确答案之间没有差异，即预测100%命中。</p>
+<p>我们看下图，这次训练过程也是如此。这几个train系列的loss都是降低的，X轴表示训练轮次，Y轴表示损失的值。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/WyiZhng/ImgHosting/Blog-PIC/9.PNG"></p>
+<p>我们看到<code>loss</code>的值都是降低，这说明很好。但是第一个<code>box_loss</code>好像还有下降的趋势。但是中间的<code>cls_loss</code>在50轮时就已经趋于稳定了，而<code>dfl_loss</code>好像在75轮附近才慢慢稳定。</p>
+<p>这些指标都代表什么？有什么意义呢？</p>
+<h4 id="1、box-loss-边界框损失：衡量画框-（目标的位置检测）"><a href="#1、box-loss-边界框损失：衡量画框-（目标的位置检测）" class="headerlink" title="1、box_loss 边界框损失：衡量画框 （目标的位置检测）"></a>1、box_loss 边界框损失：衡量画框 （目标的位置检测）</h4><p><code>box_loss</code>全称是bounding box loss，表示边界框损失。它表明AI通过训练和学习之后，对于边界框的预测和标准答案之间的损失。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/WyiZhng/ImgHosting/Blog-PIC/10.PNG"></p>
+<p>正常情况下，随着训练的进行，损失是越降越低的。如果它是长期忽高忽低，或者一直不明显收敛，那说明训练存在问题。如果<code>box_loss</code>的损失不断降低，而后持续稳定，则说明训练没有问题，也没有必要再投入资源训练了。</p>
+<p>但是<code>box_loss</code>表现优秀，仅仅说明它对物体区域（画框）的识别情况。就算这一项100分，整体效果也不一定就好。因为光会画框意义不大，我们还要知道框里的物体是什么。</p>
+<p>于是就引入另一个<code>cls_loss</code>指标。</p>
+<h4 id="2、cls-loss-分类损失：判断框里的物体-（目标的分类）"><a href="#2、cls-loss-分类损失：判断框里的物体-（目标的分类）" class="headerlink" title="2、cls_loss 分类损失：判断框里的物体 （目标的分类）"></a>2、cls_loss 分类损失：判断框里的物体 （目标的分类）</h4><p>它叫分类损失，全称为classification loss。它衡量的是预测类别和真实类别之间的差异。</p>
+<p>我们看下面的图，它不但框出了物体。而且标注出了这个框里是人，那个框里是车，哪个是细菌，哪个是垃圾：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/WyiZhng/ImgHosting/Blog-PIC/11.PNG"></p>
+<h4 id="3、dfl-loss-分布式焦点损失：精益求精"><a href="#3、dfl-loss-分布式焦点损失：精益求精" class="headerlink" title="3、dfl_loss 分布式焦点损失：精益求精"></a>3、dfl_loss 分布式焦点损失：精益求精</h4><p><code>dfl_loss</code>， 它辅助<code>box_loss</code>，提供额外的信息，通过对边界框位置的概率分布进行优化，进一步提高模型对边界框位置的细化和准确度。yolov8中首次引入</p>
+<p> 比如，预测某个边界框的坐标时，不是直接预测一个数值，而是预测该坐标周围可能的位置分布，然后通过焦点损失来优化这个分布，使得模型更关注接近真实值的位置。 </p>
+<p>如上图所示，AI模型成功预测出了①的位置。但是红、蓝、绿3个框中的①，好像哪个都没错。因此<code>dfl_loss</code>提供了一个可信度，表明哪一个焦点跟标准答案相比，会更加精确。有时候也不一定是方方正正的框！这时候dfl可能就很关键。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/WyiZhng/ImgHosting/Blog-PIC/12.PNG"></p>
+<h3 id="验证集：学得好，不一定考得好"><a href="#验证集：学得好，不一定考得好" class="headerlink" title="验证集：学得好，不一定考得好"></a>验证集：学得好，不一定考得好</h3><p><img src="https://cdn.jsdelivr.net/gh/WyiZhng/ImgHosting/Blog-PIC/13.PNG"></p>
+<p>相比训练集的平滑趋势，验证集似乎是有些反复。这说明模型分类还是很不错的，但是对于区域选择目标检测有一点点偏差。</p>
+<p>其实，这是一种常见现象。只要验证集损失没有显著上升，整体趋势在变好，且与训练集损失的差距不是特别大，这一般是正常的。</p>
+<p>不过，要留意以下细节：</p>
+<ul>
+<li>样本数据的变异：验证集可能包含一些与训练集不同风格的样本，这会导致损失不稳定。好比你拿着泰迪狗做识别训练，最后让模型去认识哈士奇狗，模型有点迷糊，拿不准。</li>
+<li>模型的过拟合：如果验证集的样本数据正常。模型在训练集上的损失表现很好，但是验证集表现不稳定。那么可能是模型记住了训练集的细节，也就是过于死记硬背，只抓住形没有抓住神。这叫过拟合。</li>
+</ul>
+<p>如果遇到比较严重的问题，或者你感觉有问题，该怎么办呢？</p>
+<p>可以调整超参数，比如调小学习率，或者使用提前停止策略来防止过拟合。也可以调整<code>batch</code>大小，增加一个批次数量，让它见多识广。</p>
+<p>同时，增加训练数据量或使用数据增强技术，可以使模型更好地泛化，减少验证损失的波动。</p>
+<h3 id="精度和召回率：又准又全的考量"><a href="#精度和召回率：又准又全的考量" class="headerlink" title="精度和召回率：又准又全的考量"></a>精度和召回率：又准又全的考量</h3><p><code>results.png</code>的后两列是同一类指标</p>
+<p><img src="https://cdn.jsdelivr.net/gh/WyiZhng/ImgHosting/Blog-PIC/14.PNG"></p>
+<p>之所以说他们是同一类，看表头就知道，他们的名字前面带<code>metrics</code>，后面带<code>(B)</code>。</p>
+<p><code>metrics</code>表示模型是在验证集上的评估指标。<code>(B)</code>呢，在目标检测任务中表示<code>Bounding Box</code>，即边界框的检测结果。</p>
+<p>首先看左上角的第一个<code>precision</code>。<code>precision</code>是精度，或者称为“精确率”。请注意，是精确率，不是准确率。准确率有专门的名词<code>accuracy</code>。两者不一样。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/WyiZhng/ImgHosting/Blog-PIC/15.PNG"></p>
+<p>这几个指数之间的区别必须要认真思考！</p>
+<p>关于P（precision）和R（recall）之间的数据趋势，而<code>PR_curve.png</code>则是两者互相妥协的曲线。这个PR图怎么看呢？越接近正方形效果越好。都接近正方形，说明整体效果又准又全。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/WyiZhng/ImgHosting/Blog-PIC/16.PNG"></p>
+<p>results.png<code>系列还剩两张图片，那就是</code>mAP50<code>与</code>mAP50-95&#96;。这俩是一类（也是看名称很像）。</p>
+<p><code>mAP50</code>要拆开看，拆成<code>mAP-50</code>，<code>mAP</code>表示mean Average Precision，称为平均精度。<code>50</code>则是在<code>IoU</code>阈值为<code>50%</code>的情况下的值。</p>
+<p>额……我好像又得讲讲什么是<code>IoU</code>了。它不是I Love You的意思，其实是Intersection over Union，是目标检测中用于衡量预测边界框与真实边界框重叠程度的指标。</p>
+<p>如果你熟悉YOLO，那么肯定知道它的特点就是You Only Look Once（你仅需看一遍）。这项优势也导致它出现很多备选框。</p>
+<p>这些个预测出的框框儿，可能是物体的全部，也可能只是中心部分，还或许仅仅是物体的一个角。不管如何，这都是算法通过学习特征计算出来的。谁是谁非，看你怎么选择。</p>
+<p>如果预测出的面积（蓝框）能占到实际区域（红框）的50%以上，那么我们就说<code>IoU</code>为50。重合度能到50%，其实能说明AI大体猜中了。因为<code>IoU</code>为100就是完全重合。</p>
+<p><code>mAP50</code>是重合度以50%为界限的平均精度。而<code>mAP50-95</code>则是<code>IoU</code>阈值从50%到95%范围内的平均值。这个更加严格一些。因此，我们看到图里面<code>mAP50-95</code>的值确实也低一些。</p>
+<p><code>mAP50</code>这个指标相对宽松，能够展示模型在较低严格度下的整体性能。它更适用于那些对定位要求不是特别严格的应用场景。</p>
+<p><code>mAP50-95</code>则意味着在严格的IoU条件下也能准确检测和定位目标。它适用于那些对定位要求较高的应用场景，如自动驾驶、医疗影像分析等。</p>
+<p>以上是基于yolo算法性能的分析，能更加了解各个指标！</p>
+<p>参考博客：<a target="_blank" rel="noopener" href="https://blog.csdn.net/ask_yang/article/details/142180044?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522799d72fa007fd00be195beaf054dcbe8%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=799d72fa007fd00be195beaf054dcbe8&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-142180044-null-null.142%5Ev102%5Epc_search_result_base3&utm_term=%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E8%A7%A3%E8%AF%BBYOLO%E7%AE%97%E6%B3%95%E8%AE%AD%E7%BB%83%E7%BB%93%E6%9E%9C%E7%9A%84%E5%90%84%E9%A1%B9%E6%8C%87%E6%A0%87&spm=1018.2226.3001.4187">https://blog.csdn.net/ask_yang/article/details/142180044?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522799d72fa007fd00be195beaf054dcbe8%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=799d72fa007fd00be195beaf054dcbe8&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-142180044-null-null.142^v102^pc_search_result_base3&amp;utm_term=%E5%A6%82%E4%BD%95%E6%AD%A3%E7%A1%AE%E8%A7%A3%E8%AF%BBYOLO%E7%AE%97%E6%B3%95%E8%AE%AD%E7%BB%83%E7%BB%93%E6%9E%9C%E7%9A%84%E5%90%84%E9%A1%B9%E6%8C%87%E6%A0%87&amp;spm=1018.2226.3001.4187</a></p>
+<h1 id="二、yolov8训练过程小结"><a href="#二、yolov8训练过程小结" class="headerlink" title="二、yolov8训练过程小结"></a>二、yolov8训练过程小结</h1><p>1、我创造了一个虚拟环境名为env，我安装好了指定pytorch和部分依赖，那么这个时候我要做一个新的yolo项目，我新键一个yolo的虚拟环境，yolo环境中pytorch也要重新安装吗 ?</p>
+<p>人工智能回复：是的，如果你为新的 YOLO 项目创建了一个<strong>新的独立虚拟环境</strong>（例如命名为 <code>yolo-env</code>），则需要在这个新环境中<strong>重新安装 PyTorch 和其他依赖</strong> 。</p>
+<p>2、首先是无法创造虚拟环境，CondaValueError: Malformed version string invalid character(s)还有Solving environment: failedCondaValueError: Malformed version string ‘~‘: invalid 以及timeout</p>
+<p> 解决： 直接删除一个叫.condarc的文件 ，在用户下的。3、</p>
+<p>3、运行训练代码报错：</p>
+<p>UnpicklingError: Weights only load failed. This file can still be loaded, to do so you have two options, do those steps only if you trust the source of the checkpoint.<br>    (1) In PyTorch 2.6, we changed the default value of the <code>weights_only</code> argument in <code>torch.load</code> from <code>False</code> to <code>True</code>. Re-running <code>torch.load</code> with <code>weights_only</code> set to <code>False</code> will likely succeed, but it can result in arbitrary code execution. Do it only if you got the file from a trusted source.<br>    (2) Alternatively, to load with <code>weights_only=True</code> please check the recommended steps in the following error message.<br>    WeightsUnpickler error: Unsupported global: GLOBAL ultralytics.nn.tasks.DetectionModel was not an allowed global by default. Please use <code>torch.serialization.add_safe_globals([DetectionModel])</code> or the <code>torch.serialization.safe_globals([DetectionModel])</code> context manager to allowlist this global if you trust this class&#x2F;function.</p>
+<p>Check the documentation of torch.load to learn more about types accepted by default with weights_only ht</p>
+<p> 在PyTorch 2.6及之后的版本中，torch.load() 中的默认参数<code>weights_only</code> 从 <code>False</code>改成了<code>True</code>，所以在需要导入权重参数时，应该写成‘False’，也就是 </p>
+<p> torch.load(r’.&#x2F;xxx’, weights_only&#x3D;False)找到报错行中谁有调用torch.load</p>
+<p>4、pytorch和torchvision版本需要一致，用下面代码验证是否可以</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;PyTorch版本: <span class="subst">&#123;torch.__version__&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;CUDA可用: <span class="subst">&#123;torch.cuda.is_available()&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;检测到的GPU数量: <span class="subst">&#123;torch.cuda.device_count()&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;当前GPU名称: <span class="subst">&#123;torch.cuda.get_device_name(<span class="number">0</span>)&#125;</span>&quot;</span>)</span><br><span class="line">预计输出：</span><br><span class="line">PyTorch版本: <span class="number">2.3</span><span class="number">.0</span>+cu121</span><br><span class="line">CUDA可用: <span class="literal">True</span></span><br><span class="line">检测到的GPU数量: <span class="number">1</span></span><br><span class="line">当前GPU名称: NVIDIA GeForce RTX <span class="number">4090</span></span><br></pre></td></tr></table></figure>
+
+<p>后面发现直接<br>pip install torchvision&#x3D;&#x3D;0.18.0会把pytorch都重新安装成非GPU版本</p>
+<p>所以找到指令：# PyTorch 2.3.0 + CUDA 12.1<br>pip install torchvision&#x3D;&#x3D;0.18.0 –index-url <a target="_blank" rel="noopener" href="https://download.pytorch.org/whl/cu121%EF%BC%8C%E5%8F%AA%E5%AE%89%E8%A3%85%E5%AF%B9%E4%BA%8Ecuda%E7%89%88%E6%9C%AC%E7%9A%84torchvision">https://download.pytorch.org/whl/cu121，只安装对于cuda版本的torchvision</a></p>
+<p>5、RuntimeError: Numpy is not available</p>
+<p>原因：numpy等级太高，需要降级！</p>
+<p>参考博客：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_67105081/article/details/137545156?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522f64593d53df363b683b482545c7153b2%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=f64593d53df363b683b482545c7153b2&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-137545156-null-null.142%5Ev102%5Epc_search_result_base3&utm_term=yolov8%E8%AE%AD%E7%BB%83%E8%87%AA%E5%B7%B1%E7%9A%84%E6%95%B0%E6%8D%AE%E9%9B%86&spm=1018.2226.3001.4187">https://blog.csdn.net/qq_67105081/article/details/137545156?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522f64593d53df363b683b482545c7153b2%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=f64593d53df363b683b482545c7153b2&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-137545156-null-null.142^v102^pc_search_result_base3&amp;utm_term=yolov8%E8%AE%AD%E7%BB%83%E8%87%AA%E5%B7%B1%E7%9A%84%E6%95%B0%E6%8D%AE%E9%9B%86&amp;spm=1018.2226.3001.4187</a></p>
+<p>以上是全部内容！</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>John Doe</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2025/05/22/YOLOV8%E9%85%8D%E7%BD%AE%E5%92%8C%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/">http://example.com/2025/05/22/YOLOV8%E9%85%8D%E7%BD%AE%E5%92%8C%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2025/05/12/%E7%B3%BB%E7%BB%9F%E6%A1%86%E6%9E%B6%E6%95%B4%E7%90%861/">系统框架整理1</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© John Doe | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
