@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="John Doe">
+
+
+
+
+
+<title>异步Promise和async | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon1.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const pagebody = document.getElementsByTagName('body')[0]
+
+            function setTheme(status) {
+
+                if (status === 'dark') {
+                    window.sessionStorage.theme = 'dark'
+                    pagebody.classList.add('dark-theme');
+
+                } else if (status === 'light') {
+                    window.sessionStorage.theme = 'light'
+                    pagebody.classList.remove('dark-theme');
+                }
+            };
+
+            setTheme(window.sessionStorage.theme)
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">YI&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                <a class="menu-item" href="/archives">Posts</a>
+                
+                <a class="menu-item" href="/category">Categories</a>
+                
+                <a class="menu-item" href="/tag">Tags</a>
+                
+                <a class="menu-item" href="/about">About</a>
+                
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">YI&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">
+                    <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M4.5 17.27q-.213 0-.356-.145T4 16.768t.144-.356t.356-.143h15q.213 0 .356.144q.144.144.144.357t-.144.356t-.356.143zm0-4.77q-.213 0-.356-.144T4 11.999t.144-.356t.356-.143h15q.213 0 .356.144t.144.357t-.144.356t-.356.143zm0-4.77q-.213 0-.356-.143Q4 7.443 4 7.23t.144-.356t.356-.143h15q.213 0 .356.144T20 7.23t-.144.356t-.356.144z"/></svg>
+                    <svg class="close-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols Light by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="m12 12.708l-5.246 5.246q-.14.14-.344.15t-.364-.15t-.16-.354t.16-.354L11.292 12L6.046 6.754q-.14-.14-.15-.344t.15-.364t.354-.16t.354.16L12 11.292l5.246-5.246q.14-.14.345-.15q.203-.01.363.15t.16.354t-.16.354L12.708 12l5.246 5.246q.14.14.15.345q.01.203-.15.363t-.354.16t-.354-.16z"/></svg>
+                </div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                <a class="menu-item" href="/archives">Posts</a>
+                
+                <a class="menu-item" href="/category">Categories</a>
+                
+                <a class="menu-item" href="/tag">Tags</a>
+                
+                <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if (toggleMenu.classList.contains("active")) {
+            toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        } else {
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">异步Promise和async</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">John Doe</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">June 13, 2025&nbsp;&nbsp;14:54:28</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h3 id="Promise-是什么？用生活中的例子通俗解释"><a href="#Promise-是什么？用生活中的例子通俗解释" class="headerlink" title="Promise 是什么？用生活中的例子通俗解释"></a>Promise 是什么？用生活中的例子通俗解释</h3><h4 id="一、Promise-的核心概念（技术角度）"><a href="#一、Promise-的核心概念（技术角度）" class="headerlink" title="一、Promise 的核心概念（技术角度）"></a>一、Promise 的核心概念（技术角度）</h4><p>Promise 是异步编程的一种解决方案，本质上是一个状态机，用于处理未来才会完成的操作。它有三种状态：</p>
+<ul>
+<li><strong>pending（进行中）</strong>：初始状态，操作未完成</li>
+<li><strong>fulfilled（已完成）</strong>：操作成功完成</li>
+<li><strong>rejected（已拒绝）</strong>：操作失败</li>
+</ul>
+<p>这三种状态一旦改变就不会再变，状态的改变会触发对应的回调函数执行。</p>
+<h4 id="二、生活中的-Promise-类比：点外卖的过程"><a href="#二、生活中的-Promise-类比：点外卖的过程" class="headerlink" title="二、生活中的 Promise 类比：点外卖的过程"></a>二、生活中的 Promise 类比：点外卖的过程</h4><h5 id="1-下单即创建-Promise"><a href="#1-下单即创建-Promise" class="headerlink" title="1. 下单即创建 Promise"></a>1. 下单即创建 Promise</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 场景：你在手机上下单一份外卖</span><br><span class="line">const orderPromise = new Promise((resolve, reject) =&gt; &#123;</span><br><span class="line">  console.log(&quot;你已下单：红烧牛肉面&quot;)</span><br><span class="line">  // 商家接单后开始处理</span><br><span class="line">  if (商家确认接单) &#123;</span><br><span class="line">    // 30分钟后餐品制作完成</span><br><span class="line">    setTimeout(() =&gt; &#123;</span><br><span class="line">      resolve(&quot;你的外卖已打包完成，骑手正在配送&quot;)</span><br><span class="line">    &#125;, 30 * 60000)</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    reject(&quot;商家拒绝接单，请重新下单&quot;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>类比</strong>：你下单后拿到一个 “订单凭证”，这就是一个 Promise 对象，此时状态是 <code>pending</code>（商家正在处理）。</p>
+<h5 id="2-处理-Promise-的两种结果"><a href="#2-处理-Promise-的两种结果" class="headerlink" title="2. 处理 Promise 的两种结果"></a>2. 处理 Promise 的两种结果</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// 场景：你等待外卖送达</span><br><span class="line">orderPromise</span><br><span class="line">  .then(result =&gt; &#123;</span><br><span class="line">    // 订单成功时的处理</span><br><span class="line">    console.log(result) // 输出：你的外卖已打包完成，骑手正在配送</span><br><span class="line">    // 继续处理后续动作</span><br><span class="line">    return &quot;你出门到楼下等待&quot;</span><br><span class="line">  &#125;)</span><br><span class="line">  .then(action =&gt; &#123;</span><br><span class="line">    console.log(action) // 输出：你出门到楼下等待</span><br><span class="line">    return &quot;骑手将外卖交给你&quot;</span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(error =&gt; &#123;</span><br><span class="line">    // 订单失败时的处理</span><br><span class="line">    console.error(error) // 输出：商家拒绝接单，请重新下单</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>类比</strong>：</p>
+<ul>
+<li><code>then()</code> 相当于你提前计划 “如果外卖顺利配送，我就去楼下等”</li>
+<li><code>catch()</code> 相当于你计划 “如果商家不接单，我就重新下单”</li>
+</ul>
+<h5 id="3-Promise-的链式调用：处理多个异步步骤"><a href="#3-Promise-的链式调用：处理多个异步步骤" class="headerlink" title="3. Promise 的链式调用：处理多个异步步骤"></a>3. Promise 的链式调用：处理多个异步步骤</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// 场景：外卖送达后的完整流程</span><br><span class="line">orderPromise</span><br><span class="line">  .then(() =&gt; &quot;骑手已取餐，预计15分钟送达&quot;)</span><br><span class="line">  .then(status =&gt; &#123;</span><br><span class="line">    console.log(status)</span><br><span class="line">    return &quot;你收到骑手电话：已到楼下&quot;</span><br><span class="line">  &#125;)</span><br><span class="line">  .then(call =&gt; &#123;</span><br><span class="line">    console.log(call)</span><br><span class="line">    return &quot;你下楼取餐，支付尾款&quot;</span><br><span class="line">  &#125;)</span><br><span class="line">  .then(action =&gt; &#123;</span><br><span class="line">    console.log(action)</span><br><span class="line">    return &quot;你打开餐盒开始用餐&quot;</span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(error =&gt; console.error(&quot;异常：&quot; + error))</span><br></pre></td></tr></table></figure>
+
+<p><strong>类比</strong>：从下单到用餐的整个流程，每个步骤都是前一个步骤的结果触发的，就像 Promise 链式调用中每个 <code>then</code> 依赖上一个操作的结果。</p>
+<h4 id="三、Promise-解决了什么问题？对比-“回调地狱”"><a href="#三、Promise-解决了什么问题？对比-“回调地狱”" class="headerlink" title="三、Promise 解决了什么问题？对比 “回调地狱”"></a><strong><u>三、Promise 解决了什么问题？对比 “回调地狱”</u></strong></h4><h5 id="1-回调地狱（Callback-Hell）：层层嵌套的回调函数"><a href="#1-回调地狱（Callback-Hell）：层层嵌套的回调函数" class="headerlink" title="1. 回调地狱（Callback Hell）：层层嵌套的回调函数"></a>1. 回调地狱（Callback Hell）：层层嵌套的回调函数</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 场景：你要完成一系列依赖操作（类似同步编程）</span><br><span class="line">doFirstStep(function(result1) &#123;</span><br><span class="line">  doSecondStep(result1, function(result2) &#123;</span><br><span class="line">    doThirdStep(result2, function(result3) &#123;</span><br><span class="line">      // 多层嵌套导致代码像金字塔一样向右缩进</span><br><span class="line">      doFinalStep(result3, function(finalResult) &#123;</span><br><span class="line">        console.log(finalResult)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p> <strong>类比</strong>：你要等朋友 A 到地铁站，再一起等朋友 B，再一起等朋友 C，最后才能出发，所有事情必须按顺序同步等待。 </p>
+<h5 id="2-Promise-的链式调用：更清晰的异步流程"><a href="#2-Promise-的链式调用：更清晰的异步流程" class="headerlink" title="2. Promise 的链式调用：更清晰的异步流程"></a>2. Promise 的链式调用：更清晰的异步流程</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">doFirstStep()</span><br><span class="line">  .then(result1 =&gt; doSecondStep(result1))</span><br><span class="line">  .then(result2 =&gt; doThirdStep(result2))</span><br><span class="line">  .then(result3 =&gt; doFinalStep(result3))</span><br><span class="line">  .then(finalResult =&gt; console.log(finalResult))</span><br><span class="line">  .catch(error =&gt; console.error(error))</span><br></pre></td></tr></table></figure>
+
+<p><strong>类比</strong>：你给朋友 A、B、C 分别发消息 “到了就告诉我”，然后你可以先做其他事（比如刷手机），每个人到了都会主动通知你，不需要一直等着。</p>
+<h4 id="四、Promise-在实际开发中的应用场景"><a href="#四、Promise-在实际开发中的应用场景" class="headerlink" title="四、Promise 在实际开发中的应用场景"></a>四、Promise 在实际开发中的应用场景</h4><ul>
+<li><strong>网络请求</strong>：发送 API 请求后等待服务器响应</li>
+<li><strong>文件操作</strong>：读取本地文件时处理异步读取</li>
+<li><strong>定时任务</strong>：设定定时器后处理到期事件</li>
+<li><strong>异步计算</strong>：处理需要长时间计算的任务</li>
+</ul>
+<h4 id="五、总结：Promise-的核心价值"><a href="#五、总结：Promise-的核心价值" class="headerlink" title="五、总结：Promise 的核心价值"></a>五、总结：Promise 的核心价值</h4><p>Promise 就像生活中的 “预约服务”：你不需要一直盯着事情是否完成，只需要提前约定好 “完成时怎么做” 和 “失败时怎么做”，然后可以去做其他事情。这种模式让异步编程更有序、更易维护，避免了 “死等” 或 “层层嵌套” 的问题。</p>
+<h2 id="async-await-是什么？用生活例子通俗解释"><a href="#async-await-是什么？用生活例子通俗解释" class="headerlink" title="async/await 是什么？用生活例子通俗解释"></a><code>async/await</code> 是什么？用生活例子通俗解释</h2><h4 id="一、async-await-的核心概念（技术角度）"><a href="#一、async-await-的核心概念（技术角度）" class="headerlink" title="一、async/await 的核心概念（技术角度）"></a>一、<code>async/await</code> 的核心概念（技术角度）</h4><p><code>async/await</code> 是基于 Promise 的异步编程语法糖，让异步代码看起来像同步代码一样直观。它的核心特点：</p>
+<ul>
+<li><code>async</code> 标记异步函数，返回一个 Promise</li>
+<li><code>await</code> 暂停异步函数的执行，等待 Promise 解决后继续</li>
+<li>避免了 Promise 链式调用的冗余语法，使代码更简洁清晰</li>
+</ul>
+<h4 id="二、生活中的-async-await-类比：早晨做早餐的过程"><a href="#二、生活中的-async-await-类比：早晨做早餐的过程" class="headerlink" title="二、生活中的 async/await 类比：早晨做早餐的过程"></a>二、生活中的 <code>async/await</code> 类比：早晨做早餐的过程</h4><h5 id="1-同步做早餐（传统编程）"><a href="#1-同步做早餐（传统编程）" class="headerlink" title="1. 同步做早餐（传统编程）"></a>1. 同步做早餐（传统编程）</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// 场景：你按顺序做早餐，必须等前一件事完成才能做下一件</span><br><span class="line">console.log(&quot;开始做早餐&quot;)</span><br><span class="line"></span><br><span class="line">// 煮鸡蛋（10分钟）</span><br><span class="line">煮鸡蛋()  // 必须等鸡蛋煮好才能做下一步</span><br><span class="line">console.log(&quot;鸡蛋煮好了&quot;)</span><br><span class="line"></span><br><span class="line">// 烤面包（5分钟）</span><br><span class="line">烤面包()  // 必须等面包烤好才能做下一步</span><br><span class="line">console.log(&quot;面包烤好了&quot;)</span><br><span class="line"></span><br><span class="line">// 冲咖啡（3分钟）</span><br><span class="line">冲咖啡()</span><br><span class="line">console.log(&quot;咖啡冲好了&quot;)</span><br><span class="line"></span><br><span class="line">console.log(&quot;早餐完成，可以开吃了&quot;)</span><br></pre></td></tr></table></figure>
+
+<p><strong>类比</strong>：你必须站在厨房，先等鸡蛋煮 10 分钟，再等面包烤 5 分钟，最后等咖啡冲 3 分钟，整个过程需要 18 分钟，期间不能做其他事。</p>
+<h5 id="2-异步做早餐（使用-async-await）"><a href="#2-异步做早餐（使用-async-await）" class="headerlink" title="2. 异步做早餐（使用 async/await）"></a>2. 异步做早餐（使用 <code>async/await</code>）</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">async def 做早餐():</span><br><span class="line">    print(&quot;开始做早餐&quot;)</span><br><span class="line">    </span><br><span class="line">    # 异步煮鸡蛋（10分钟）</span><br><span class="line">    煮鸡蛋任务 = asyncio.create_task(煮鸡蛋())</span><br><span class="line">    </span><br><span class="line">    # 异步烤面包（5分钟）</span><br><span class="line">    烤面包任务 = asyncio.create_task(烤面包())</span><br><span class="line">    </span><br><span class="line">    # 先去冲咖啡（3分钟），不需要等前两个任务</span><br><span class="line">    await 冲咖啡()</span><br><span class="line">    print(&quot;咖啡冲好了&quot;)</span><br><span class="line">    </span><br><span class="line">    # 等待鸡蛋煮好（此时鸡蛋可能已煮好或还在煮）</span><br><span class="line">    await 煮鸡蛋任务</span><br><span class="line">    print(&quot;鸡蛋煮好了&quot;)</span><br><span class="line">    </span><br><span class="line">    # 等待面包烤好</span><br><span class="line">    await 烤面包任务</span><br><span class="line">    print(&quot;面包烤好了&quot;)</span><br><span class="line">    </span><br><span class="line">    print(&quot;早餐完成，可以开吃了&quot;)</span><br><span class="line"></span><br><span class="line"># 运行异步函数</span><br><span class="line">asyncio.run(做早餐())</span><br></pre></td></tr></table></figure>
+
+<p><strong>类比</strong>：</p>
+<ul>
+<li>你同时启动 “煮鸡蛋” 和 “烤面包” 两个任务（相当于异步任务）</li>
+<li>然后去 “冲咖啡”（<code>await 冲咖啡()</code>），3 分钟完成</li>
+<li>此时 “烤面包” 可能已完成（5 分钟），“煮鸡蛋” 还在进行（剩余 7 分钟）</li>
+<li>等你冲完咖啡，“烤面包” 任务已完成，直接获取结果，再等待 “煮鸡蛋” 完成</li>
+<li>总耗时约 10 分钟（最长任务的时间），比同步方式节省 8 分钟</li>
+</ul>
+<h4 id="三、async-await-与-Promise-的关系：咖啡师的工作流程"><a href="#三、async-await-与-Promise-的关系：咖啡师的工作流程" class="headerlink" title="三、async/await 与 Promise 的关系：咖啡师的工作流程"></a>三、<code>async/await</code> 与 Promise 的关系：咖啡师的工作流程</h4><h5 id="1-Promise-版本（链式调用）"><a href="#1-Promise-版本（链式调用）" class="headerlink" title="1. Promise 版本（链式调用）"></a>1. Promise 版本（链式调用）</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 场景：咖啡师处理订单</span><br><span class="line">function 处理订单(客户) &#123;</span><br><span class="line">  return 接收订单(客户)</span><br><span class="line">    .then(订单 =&gt; 准备咖啡豆(订单))</span><br><span class="line">    .then(咖啡豆 =&gt; 研磨咖啡豆(咖啡豆))</span><br><span class="line">    .then(研磨好的咖啡豆 =&gt; 冲泡咖啡(研磨好的咖啡豆))</span><br><span class="line">    .then(咖啡 =&gt; 添加配料(咖啡))</span><br><span class="line">    .then(完成的咖啡 =&gt; 递给客户(完成的咖啡))</span><br><span class="line">    .catch(错误 =&gt; 处理投诉(错误))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>类比</strong>：咖啡师每完成一个步骤（如 “准备咖啡豆”），就告诉下一个步骤 “好了可以开始了”，形成一条长长的任务链。</p>
+<h5 id="2-async-await-版本（更直观的异步）"><a href="#2-async-await-版本（更直观的异步）" class="headerlink" title="2. async/await 版本（更直观的异步）"></a>2. <code>async/await</code> 版本（更直观的异步）</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">async def 处理订单(客户):</span><br><span class="line">    try:</span><br><span class="line">        订单 = await 接收订单(客户)</span><br><span class="line">        咖啡豆 = await 准备咖啡豆(订单)</span><br><span class="line">        研磨好的咖啡豆 = await 研磨咖啡豆(咖啡豆)</span><br><span class="line">        咖啡 = await 冲泡咖啡(研磨好的咖啡豆)</span><br><span class="line">        完成的咖啡 = await 添加配料(咖啡)</span><br><span class="line">        return await 递给客户(完成的咖啡)</span><br><span class="line">    except 异常 as e:</span><br><span class="line">        await 处理投诉(e)</span><br></pre></td></tr></table></figure>
+
+<p><strong>类比</strong>：咖啡师说 “等一下，我先接收订单”（<code>await 接收订单</code>），然后去做其他事，等订单来了再继续 “等一下，我去准备咖啡豆”，整个过程像同步说话一样自然，但实际是异步执行。</p>
+<h4 id="四、async-await-的关键优势：图书馆借书流程"><a href="#四、async-await-的关键优势：图书馆借书流程" class="headerlink" title="四、async/await 的关键优势：图书馆借书流程"></a>四、<code>async/await</code> 的关键优势：图书馆借书流程</h4><h5 id="1-传统异步（Promise-链式调用）"><a href="#1-传统异步（Promise-链式调用）" class="headerlink" title="1. 传统异步（Promise 链式调用）"></a>1. 传统异步（Promise 链式调用）</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function 借书(书名) &#123;</span><br><span class="line">  return 查找书籍(书名)</span><br><span class="line">    .then(书籍 =&gt; &#123;</span><br><span class="line">      if (书籍.可借阅) &#123;</span><br><span class="line">        return 办理借阅(书籍)</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        return 预约书籍(书籍)</span><br><span class="line">          .then(预约号 =&gt; 等待通知(预约号))</span><br><span class="line">          .then(() =&gt; 办理借阅(书籍))</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    .then(借阅成功 =&gt; 发送借阅确认(借阅成功))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>类比</strong>：你去图书馆借书，先查书是否在架，若在就借；若不在，就预约，等通知到了再借，最后确认。代码逻辑像 “如果… 就… 否则… 就…” 的嵌套。</p>
+<h5 id="2-async-await-版本（更清晰的逻辑）"><a href="#2-async-await-版本（更清晰的逻辑）" class="headerlink" title="2. async/await 版本（更清晰的逻辑）"></a>2. <code>async/await</code> 版本（更清晰的逻辑）</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">async def 借书(书名):</span><br><span class="line">    书籍 = await 查找书籍(书名)</span><br><span class="line">    if 书籍.可借阅:</span><br><span class="line">        借阅记录 = await 办理借阅(书籍)</span><br><span class="line">    else:</span><br><span class="line">        预约号 = await 预约书籍(书籍)</span><br><span class="line">        await 等待通知(预约号)</span><br><span class="line">        借阅记录 = await 办理借阅(书籍)</span><br><span class="line">    await 发送借阅确认(借阅记录)</span><br></pre></td></tr></table></figure>
+
+<p><strong>类比</strong>：你用自然语言描述流程：“先查书，若可借就直接办；若不可借，就预约，等通知到了再办，最后确认”。代码和逻辑顺序完全一致，没有冗余的链式调用。</p>
+<h4 id="五、async-await-的使用场景"><a href="#五、async-await-的使用场景" class="headerlink" title="五、async/await 的使用场景"></a>五、<code>async/await</code> 的使用场景</h4><ul>
+<li><strong>多任务并行处理</strong>：如同时下载多个文件，等待所有下载完成</li>
+<li><strong>复杂异步流程</strong>：如电商下单时，同时验证库存、扣减余额、发送通知</li>
+<li><strong>错误处理优化</strong>：用 <code>try/catch</code> 统一处理异步任务的异常，比 Promise 的 <code>catch</code> 更直观</li>
+</ul>
+<h4 id="六、总结：async-await-的核心价值"><a href="#六、总结：async-await-的核心价值" class="headerlink" title="六、总结：async/await 的核心价值"></a>六、总结：<code>async/await</code> 的核心价值</h4><p><code>async/await</code> 就像一个 “时间管理大师”：它让你用同步的语法写出异步的逻辑，就像你一边煮鸡蛋、一边烤面包、一边冲咖啡，合理利用时间碎片，同时保持思路的清晰。这种模式避免了 “死等” 某个任务的浪费，也避免了异步回调的逻辑混乱，让异步编程变得像写日记一样自然流畅。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>John Doe</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2025/06/13/%E5%BC%82%E6%AD%A5Promise%E5%92%8Casync/">http://example.com/2025/06/13/%E5%BC%82%E6%AD%A5Promise%E5%92%8Casync/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2025/06/12/GIT%E5%9F%BA%E7%A1%80%E4%BB%A5%E5%8F%8AVSCODE%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/">GIT基础以及VSCODE版本控制</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© John Doe | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
