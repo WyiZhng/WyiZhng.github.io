@@ -107,7 +107,7 @@ commit 以后，会变成 publish 按钮，在 publish 前可以选择公开或�
 
 当然后续我们也可以删除分支，点击 github 上的 branch 里面就可以对分支进行删除，但是协作者操作分支记录还是会存在 VSCode 上的记录还是看得到。
 
-以上内容参考：[和傻子一起写代码_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1Hkr7YYEh8)
+以上内容参考：[和傻子一起写代码\_哔哩哔哩\_bilibili](https://www.bilibili.com/video/BV1Hkr7YYEh8)
 
 # 深入学习
 

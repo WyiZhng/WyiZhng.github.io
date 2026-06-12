@@ -30,17 +30,17 @@ Promise 是异步编程的一种解决方案，本质上是一个状态机，用
 ```javascript
 // 场景：你在手机上下单一份外卖
 const orderPromise = new Promise((resolve, reject) => {
-  console.log("你已下单：红烧牛肉面")
+  console.log("你已下单：红烧牛肉面");
   // 商家接单后开始处理
   if (商家确认接单) {
     // 30分钟后餐品制作完成
     setTimeout(() => {
-      resolve("你的外卖已打包完成，骑手正在配送")
-    }, 30 * 60000)
+      resolve("你的外卖已打包完成，骑手正在配送");
+    }, 30 * 60000);
   } else {
-    reject("商家拒绝接单，请重新下单")
+    reject("商家拒绝接单，请重新下单");
   }
-})
+});
 ```
 
 **类比**：你下单后拿到一个 "订单凭证"，这就是一个 Promise 对象，此时状态是 `pending`（商家正在处理）。
@@ -52,18 +52,18 @@ const orderPromise = new Promise((resolve, reject) => {
 orderPromise
   .then(result => {
     // 订单成功时的处理
-    console.log(result) // 输出：你的外卖已打包完成，骑手正在配送
+    console.log(result); // 输出：你的外卖已打包完成，骑手正在配送
     // 继续处理后续动作
-    return "你出门到楼下等待"
+    return "你出门到楼下等待";
   })
   .then(action => {
-    console.log(action) // 输出：你出门到楼下等待
-    return "骑手将外卖交给你"
+    console.log(action); // 输出：你出门到楼下等待
+    return "骑手将外卖交给你";
   })
   .catch(error => {
     // 订单失败时的处理
-    console.error(error) // 输出：商家拒绝接单，请重新下单
-  })
+    console.error(error); // 输出：商家拒绝接单，请重新下单
+  });
 ```
 
 **类比**：
@@ -78,18 +78,18 @@ orderPromise
 orderPromise
   .then(() => "骑手已取餐，预计15分钟送达")
   .then(status => {
-    console.log(status)
-    return "你收到骑手电话：已到楼下"
+    console.log(status);
+    return "你收到骑手电话：已到楼下";
   })
   .then(call => {
-    console.log(call)
-    return "你下楼取餐，支付尾款"
+    console.log(call);
+    return "你下楼取餐，支付尾款";
   })
   .then(action => {
-    console.log(action)
-    return "你打开餐盒开始用餐"
+    console.log(action);
+    return "你打开餐盒开始用餐";
   })
-  .catch(error => console.error("异常：" + error))
+  .catch(error => console.error("异常：" + error));
 ```
 
 **类比**：从下单到用餐的整个流程，每个步骤都是前一个步骤的结果触发的，就像 Promise 链式调用中每个 `then` 依赖上一个操作的结果。
@@ -100,16 +100,16 @@ orderPromise
 
 ```javascript
 // 场景：你要完成一系列依赖操作（类似同步编程）
-doFirstStep(function(result1) {
-  doSecondStep(result1, function(result2) {
-    doThirdStep(result2, function(result3) {
+doFirstStep(function (result1) {
+  doSecondStep(result1, function (result2) {
+    doThirdStep(result2, function (result3) {
       // 多层嵌套导致代码像金字塔一样向右缩进
-      doFinalStep(result3, function(finalResult) {
-        console.log(finalResult)
-      })
-    })
-  })
-})
+      doFinalStep(result3, function (finalResult) {
+        console.log(finalResult);
+      });
+    });
+  });
+});
 ```
 
 **类比**：你要等朋友 A 到地铁站，再一起等朋友 B，再一起等朋友 C，最后才能出发，所有事情必须按顺序同步等待。
@@ -122,7 +122,7 @@ doFirstStep()
   .then(result2 => doThirdStep(result2))
   .then(result3 => doFinalStep(result3))
   .then(finalResult => console.log(finalResult))
-  .catch(error => console.error(error))
+  .catch(error => console.error(error));
 ```
 
 **类比**：你给朋友 A、B、C 分别发消息 "到了就告诉我"，然后你可以先做其他事（比如刷手机），每个人到了都会主动通知你，不需要一直等着。
@@ -156,21 +156,21 @@ Promise 就像生活中的 "预约服务"：你不需要一直盯着事情是否
 
 ```javascript
 // 场景：你按顺序做早餐，必须等前一件事完成才能做下一件
-console.log("开始做早餐")
+console.log("开始做早餐");
 
 // 煮鸡蛋（10分钟）
-煮鸡蛋()  // 必须等鸡蛋煮好才能做下一步
-console.log("鸡蛋煮好了")
+煮鸡蛋(); // 必须等鸡蛋煮好才能做下一步
+console.log("鸡蛋煮好了");
 
 // 烤面包（5分钟）
-烤面包()  // 必须等面包烤好才能做下一步
-console.log("面包烤好了")
+烤面包(); // 必须等面包烤好才能做下一步
+console.log("面包烤好了");
 
 // 冲咖啡（3分钟）
-冲咖啡()
-console.log("咖啡冲好了")
+冲咖啡();
+console.log("咖啡冲好了");
 
-console.log("早餐完成，可以开吃了")
+console.log("早餐完成，可以开吃了");
 ```
 
 **类比**：你必须站在厨房，先等鸡蛋煮 10 分钟，再等面包烤 5 分钟，最后等咖啡冲 3 分钟，整个过程需要 18 分钟，期间不能做其他事。
@@ -180,25 +180,25 @@ console.log("早餐完成，可以开吃了")
 ```python
 async def 做早餐():
     print("开始做早餐")
-    
+
     # 异步煮鸡蛋（10分钟）
     煮鸡蛋任务 = asyncio.create_task(煮鸡蛋())
-    
+
     # 异步烤面包（5分钟）
     烤面包任务 = asyncio.create_task(烤面包())
-    
+
     # 先去冲咖啡（3分钟），不需要等前两个任务
     await 冲咖啡()
     print("咖啡冲好了")
-    
+
     # 等待鸡蛋煮好（此时鸡蛋可能已煮好或还在煮）
     await 煮鸡蛋任务
     print("鸡蛋煮好了")
-    
+
     # 等待面包烤好
     await 烤面包任务
     print("面包烤好了")
-    
+
     print("早餐完成，可以开吃了")
 
 # 运行异步函数
@@ -226,7 +226,7 @@ function 处理订单(客户) {
     .then(研磨好的咖啡豆 => 冲泡咖啡(研磨好的咖啡豆))
     .then(咖啡 => 添加配料(咖啡))
     .then(完成的咖啡 => 递给客户(完成的咖啡))
-    .catch(错误 => 处理投诉(错误))
+    .catch(错误 => 处理投诉(错误));
 }
 ```
 
@@ -258,14 +258,14 @@ function 借书(书名) {
   return 查找书籍(书名)
     .then(书籍 => {
       if (书籍.可借阅) {
-        return 办理借阅(书籍)
+        return 办理借阅(书籍);
       } else {
         return 预约书籍(书籍)
           .then(预约号 => 等待通知(预约号))
-          .then(() => 办理借阅(书籍))
+          .then(() => 办理借阅(书籍));
       }
     })
-    .then(借阅成功 => 发送借阅确认(借阅成功))
+    .then(借阅成功 => 发送借阅确认(借阅成功));
 }
 ```
 

@@ -18,22 +18,22 @@ description: "Vue3 Router 学习笔记，包括路由配置、路径别名、参
 
 ```javascript
 const routes = [
-    {
-        path: "/", // http://localhost:5173
-        component: () => import("../views/index.vue")
-    },
-    {
-        path: "/content", // http://localhost:5173/content
-        component: () => import("../views/content.vue")
-    },
-]
+  {
+    path: "/", // http://localhost:5173
+    component: () => import("../views/index.vue"),
+  },
+  {
+    path: "/content", // http://localhost:5173/content
+    component: () => import("../views/content.vue"),
+  },
+];
 
 const router = createRouter({
-    //使用url的#符号之后的部分模拟url路径的变化,因为不会触发页面刷新,所以不需要服务端支持
-    //history: createWebHashHistory(), 
-    history: createWebHistory(),
-    routes
-})
+  //使用url的#符号之后的部分模拟url路径的变化,因为不会触发页面刷新,所以不需要服务端支持
+  //history: createWebHashHistory(),
+  history: createWebHistory(),
+  routes,
+});
 ```
 
 和下面的写法效果相同：
@@ -43,22 +43,22 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'home',
+      path: "/",
+      name: "home",
       component: HomeView,
     },
     {
-      path: '/about',
-      name: 'about',
+      path: "/about",
+      name: "about",
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
+      component: () => import("../views/AboutView.vue"),
     },
   ],
-})
+});
 
-export default router
+export default router;
 ```
 
 后面这个更加便捷！
@@ -66,16 +66,16 @@ export default router
 对于 `main.js` 中的：
 
 ```javascript
-createApp(App).use(router).mount('#app')
+createApp(App).use(router).mount("#app");
 ```
 
 和
 
 ```javascript
-const app = createApp(App)
-app.use(createPinia())
-app.use(router)
-app.mount('#app')
+const app = createApp(App);
+app.use(createPinia());
+app.use(router);
+app.mount("#app");
 ```
 
 效果也是差不多的。
@@ -108,13 +108,13 @@ resolve: {
 
 ```json
 {
-    "compilerOptions": {
-      "baseUrl": ".",
-      "paths": {
-        "@/*": ["src/*"] // 配置 @ 符号指向 src 目录及其子目录
-      }
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"] // 配置 @ 符号指向 src 目录及其子目录
     }
   }
+}
 ```
 
 并且安装别名路径跳转插件实现路径跳转，`Ctrl + 点击` 实现跳转。
@@ -124,21 +124,16 @@ resolve: {
 通过 `http://localhost:5174/Login?id=200&title=编程` 访问页面，如何获取页面数据，就是在 `Login.vue` 中加入：
 
 ```vue
-<script setup>
-
-</script>
+<script setup></script>
 
 <template>
-
-  LOGIn页面 <hr>
-  id: {{$route.query.id}} <br>
-  title: {{$route.query.title}}
-
+  LOGIn页面
+  <hr />
+  id: {{ $route.query.id }} <br />
+  title: {{ $route.query.title }}
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
 ```
 
 即可以，如下图：
@@ -168,20 +163,17 @@ resolve: {
 而如何访问路径参数呢？`user.vue` 如下：
 
 ```vue
-<script setup>
-
-</script>
+<script setup></script>
 
 <template>
-    个人主页 - www.dengruicode.com <hr>
+  个人主页 - www.dengruicode.com
+  <hr />
 
-    id: {{ $route.params.id }} <br>
-    name: {{ $route.params.name }}
+  id: {{ $route.params.id }} <br />
+  name: {{ $route.params.name }}
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
 ```
 
 ## 第四节：router-link、定义别名、定义路由名称、编程式导航
@@ -204,14 +196,22 @@ resolve: {
 
 ```vue
 <template>
-    首页 - dengruicode.com <hr>
+  首页 - dengruicode.com
+  <hr />
 
-    <router-link to="/content?id=100&title=邓瑞编程">查询字符串传参</router-link> <br>
-    <router-link to="/user/007/name/邓瑞">路径传参</router-link> <br>
+  <router-link to="/content?id=100&title=邓瑞编程">查询字符串传参</router-link>
+  <br />
+  <router-link to="/user/007/name/邓瑞">路径传参</router-link> <br />
 
-    <!-- 动态属性绑定 -->
-    <router-link :to="{ path: '/content', query: { id: 200, title: '邓瑞' } }">查询字符串传参 - 动态属性绑定</router-link> <br>
-    <router-link :to="{ path: `/user/${userId}/name/${userName}` }">路径传参 - 动态属性绑定</router-link> <br>
+  <!-- 动态属性绑定 -->
+  <router-link :to="{ path: '/content', query: { id: 200, title: '邓瑞' } }"
+    >查询字符串传参 - 动态属性绑定</router-link
+  >
+  <br />
+  <router-link :to="{ path: `/user/${userId}/name/${userName}` }"
+    >路径传参 - 动态属性绑定</router-link
+  >
+  <br />
 </template>
 ```
 
@@ -219,39 +219,42 @@ resolve: {
 
 ```vue
 <script setup>
-    import { useRouter } from 'vue-router';
-    const router = useRouter()
+import { useRouter } from "vue-router";
+const router = useRouter();
 
-    let userId = 100
-    let userName = "邓瑞"
+let userId = 100;
+let userName = "邓瑞";
 
-    const goTo = ()=> {
-        //router.push("/user/007/name/邓瑞")
-        //router.push({ path: '/content', query: { id: 200, title: '邓瑞' } })
-        router.push({ name: 'history', params: { id: '300', name: '邓瑞编程' }})
-    }
+const goTo = () => {
+  //router.push("/user/007/name/邓瑞")
+  //router.push({ path: '/content', query: { id: 200, title: '邓瑞' } })
+  router.push({ name: "history", params: { id: "300", name: "邓瑞编程" } });
+};
 </script>
 
 <template>
-    首页 - dengruicode.com <hr>
+  首页 - dengruicode.com
+  <hr />
 
-    <!-- 定义路由名称 -->
-    <router-link :to="{ name: 'history', params: { id: '300', name: '邓瑞编程' }}">路径传参 - 定义路由名称</router-link> <br>
+  <!-- 定义路由名称 -->
+  <router-link
+    :to="{ name: 'history', params: { id: '300', name: '邓瑞编程' } }"
+    >路径传参 - 定义路由名称</router-link
+  >
+  <br />
 
-    <!-- 编程式导航 -->
-    <button @click="goTo()">编程式导航</button>
+  <!-- 编程式导航 -->
+  <button @click="goTo()">编程式导航</button>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
 ```
 
 ## 第五节：嵌套路由共享组件
 
 ```javascript
 {
-      path: "/vip", 
+      path: "/vip",
       component: () => import("@/views/vip.vue"),
       children: [ // 子路由
           {
@@ -291,34 +294,34 @@ resolve: {
 在 `main.js` 的里面插入如下代码：
 
 ```javascript
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from "vue";
+import App from "./App.vue";
 
-import router from './router'
+import router from "./router";
 
 //createApp(App).mount('#app')
-const app = createApp(App)
-app.use(router)
+const app = createApp(App);
+app.use(router);
 
 //全局前置守卫
 router.beforeEach((to, from, next) => {
-    console.log("to:",to) //即将进入的路由的信息
-    console.log("from:",from) //当前即将离开的路由信息
+  console.log("to:", to); //即将进入的路由的信息
+  console.log("from:", from); //当前即将离开的路由信息
 
-    next()
+  next();
 
-    /*
+  /*
         if(to.name == "history"){
             next(false) //拦截
         }else{
             next() //继续
         }
     */
-})
+});
 
-app.mount('#app')
+app.mount("#app");
 ```
 
 判断从什么页面来的。符合的话才可以进行访问新的页面！
 
-学习原链接：[7.全局前置守卫_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1xt421h7LC)
+学习原链接：[7.全局前置守卫\_哔哩哔哩\_bilibili](https://www.bilibili.com/video/BV1xt421h7LC)
