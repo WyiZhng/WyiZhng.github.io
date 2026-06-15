@@ -23,6 +23,12 @@ const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
 const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 const homePath = getRelativeLocaleUrl(locale, "");
+const topics = ["Vue", "Git", "AI", "YOLO", "工程化"];
+const stats = [
+  { label: "文章", value: sortedPosts.length },
+  { label: "方向", value: topics.length },
+  { label: "部署", value: "Pages" },
+];
 ---
 
 <Layout>
@@ -33,48 +39,100 @@ const homePath = getRelativeLocaleUrl(locale, "");
     data-home-path={homePath}
     class="app-layout"
   >
-    <section id="hero" class="border-border border-b pt-8 pb-6">
-      <h1 class="my-4 inline-block text-4xl font-bold sm:my-8 sm:text-5xl">
-        YI's Blog
-      </h1>
-      <a
-        target="_blank"
-        href={`${import.meta.env.BASE_URL.replace(/\/?$/, "/")}rss.xml`}
-        class="inline-block"
-        aria-label="RSS Feed"
-        title="RSS Feed"
-      >
-        <IconRss
-          width={20}
-          height={20}
-          class="stroke-accent scale-125 stroke-3 rtl:-rotate-90"
-        />
-        <span class="sr-only">RSS Feed</span>
-      </a>
-
-      <p>
-        这里记录我的技术学习、项目实践和问题复盘，重点关注前端工程、 Git
-        工作流、AI 应用和计算机视觉等方向。
-      </p>
-      <p class="mt-2">
-        你可以从
-        <LinkButton
-          class="hover:text-accent underline decoration-dashed underline-offset-4"
-          href={getRelativeLocaleUrl(locale, "posts")}
-        >
-          文章列表
-        </LinkButton> 开始阅读，也可以通过搜索快速找到某个主题。
-      </p>
-      {
-        socials.length > 0 && (
-          <div class="mt-4 flex max-sm:flex-col sm:items-center">
-            <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">
-              {t.home.socialLinks}:
-            </div>
-            <Socials />
+    <section id="hero" class="relative py-12 sm:py-16">
+      <div class="grid gap-6 lg:grid-cols-[1.35fr_0.9fr] lg:items-stretch">
+        <div class="glass-card relative overflow-hidden p-6 sm:p-8">
+          <div
+            class="bg-accent/18 pointer-events-none absolute -top-28 -right-24 h-72 w-72 rounded-full blur-3xl"
+            aria-hidden="true"
+          >
           </div>
-        )
-      }
+          <p class="text-accent mb-5 text-sm font-semibold tracking-[0.24em]">
+            FRONTEND · AI · NOTES
+          </p>
+          <h1
+            class="gradient-text max-w-2xl text-5xl leading-tight font-black text-balance sm:text-7xl"
+          >
+            YI's Blog
+          </h1>
+          <p class="text-muted-foreground mt-6 max-w-2xl text-lg leading-8">
+            记录技术学习、项目实践和问题复盘，把零散经验沉淀成能反复查阅的工程笔记。
+          </p>
+
+          <div class="mt-8 flex flex-wrap gap-3">
+            <LinkButton
+              href={getRelativeLocaleUrl(locale, "posts")}
+              class="bg-accent text-accent-foreground shadow-accent/20 hover:text-accent-foreground rounded-full px-5 py-2.5 no-underline shadow-lg transition hover:-translate-y-0.5"
+            >
+              开始阅读
+              <IconArrowRight class="inline-block rtl:-rotate-180" />
+            </LinkButton>
+            <LinkButton
+              href={getRelativeLocaleUrl(locale, "search")}
+              class="border-border bg-background/80 hover:text-accent rounded-full border px-5 py-2.5 no-underline backdrop-blur transition hover:-translate-y-0.5"
+            >
+              搜索文章
+            </LinkButton>
+            <a
+              target="_blank"
+              href={`${import.meta.env.BASE_URL.replace(/\/?$/, "/")}rss.xml`}
+              class="border-border bg-background/80 hover:text-accent inline-flex items-center rounded-full border px-3 py-2.5 backdrop-blur transition hover:-translate-y-0.5"
+              aria-label="RSS Feed"
+              title="RSS Feed"
+            >
+              <IconRss
+                width={20}
+                height={20}
+                class="stroke-accent scale-110 stroke-3 rtl:-rotate-90"
+              />
+              <span class="sr-only">RSS Feed</span>
+            </a>
+          </div>
+        </div>
+
+        <aside class="glass-card flex flex-col justify-between gap-6 p-6">
+          <div class="flex items-center gap-4">
+            <img
+              src="/image/avatar.jpeg"
+              alt="WyiZhng avatar"
+              class="border-border shadow-accent/10 size-20 rounded-2xl border object-cover shadow-lg"
+            />
+            <div>
+              <p class="text-muted-foreground text-sm">Hi, I'm</p>
+              <p class="text-2xl font-black">WyiZhng</p>
+              <p class="text-muted-foreground mt-1 text-sm">
+                正在把技术碎片整理成自己的知识地图。
+              </p>
+            </div>
+          </div>
+
+          <ul class="grid grid-cols-3 gap-3">
+            {
+              stats.map(stat => (
+                <li class="border-border bg-muted/45 rounded-xl border p-3 text-center">
+                  <p class="text-accent text-xl font-black">{stat.value}</p>
+                  <p class="text-muted-foreground mt-1 text-xs">{stat.label}</p>
+                </li>
+              ))
+            }
+          </ul>
+
+          <ul class="flex flex-wrap gap-2">
+            {topics.map(topic => <li class="soft-chip">{topic}</li>)}
+          </ul>
+
+          {
+            socials.length > 0 && (
+              <div class="border-border border-t pt-4">
+                <div class="text-muted-foreground mb-2 text-sm">
+                  {t.home.socialLinks}
+                </div>
+                <Socials />
+              </div>
+            )
+          }
+        </aside>
+      </div>
     </section>
 
     {
@@ -82,7 +140,7 @@ const homePath = getRelativeLocaleUrl(locale, "");
         <section
           id="featured"
           class:list={[
-            "pt-12 pb-6",
+            "pt-12 pb-8",
             { "border-border border-b": recentPosts.length > 0 },
           ]}
         >
@@ -100,11 +158,18 @@ const homePath = getRelativeLocaleUrl(locale, "");
 
     {
       recentPosts.length > 0 && (
-        <section id="recent-posts" class="pt-12 pb-6">
-          <h2 class="text-2xl font-semibold tracking-wide">
-            {t.home.recentPosts}
-          </h2>
-          <ul>
+        <section id="recent-posts" class="pt-8 pb-8">
+          <div class="mb-4 flex items-end justify-between gap-4">
+            <div>
+              <p class="text-accent text-sm font-semibold tracking-[0.18em]">
+                LATEST
+              </p>
+              <h2 class="mt-1 text-2xl font-bold tracking-wide">
+                {t.home.recentPosts}
+              </h2>
+            </div>
+          </div>
+          <ul class="grid gap-4">
             {recentPosts.slice(0, postsConfig.perIndex).map(data => (
               <Card variant="h3" {...data} />
             ))}
@@ -113,8 +178,11 @@ const homePath = getRelativeLocaleUrl(locale, "");
       )
     }
 
-    <div class="my-8 text-center">
-      <LinkButton href={getRelativeLocaleUrl(locale, "posts")}>
+    <div class="my-10 text-center">
+      <LinkButton
+        href={getRelativeLocaleUrl(locale, "posts")}
+        class="border-border bg-background/80 hover:text-accent rounded-full border px-5 py-2.5 no-underline shadow-sm backdrop-blur transition hover:-translate-y-0.5"
+      >
         {t.home.allPosts}
         <IconArrowRight class="inline-block rtl:-rotate-180" />
       </LinkButton>

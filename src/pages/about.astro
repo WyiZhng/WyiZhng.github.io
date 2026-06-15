@@ -2,8 +2,6 @@
 import { getEntry, render } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
-import Breadcrumb from "@/components/Breadcrumb.astro";
-import Main from "@/components/Main.astro";
 import Footer from "@/components/Footer.astro";
 import config from "@/config";
 
@@ -16,6 +14,29 @@ if (!about) {
 }
 
 const { Content } = await render(about);
+
+const focusAreas = [
+  "Vue 3 / TypeScript",
+  "工程化与 Git 工作流",
+  "AI 应用开发",
+  "YOLO / 计算机视觉",
+  "技术写作与复盘",
+];
+
+const timeline = [
+  {
+    title: "从 Hexo 迁移到 Astro",
+    desc: "把旧静态博客升级为更现代、更容易维护的内容站。",
+  },
+  {
+    title: "建立技术笔记系统",
+    desc: "把日常学习、项目问题和配置踩坑整理成可检索文章。",
+  },
+  {
+    title: "继续做个人作品集",
+    desc: "后续会加入项目展示、实验记录和更完整的学习地图。",
+  },
+];
 ---
 
 <Layout
@@ -26,11 +47,89 @@ const { Content } = await render(about);
 >
   <Header />
 
-  <Breadcrumb />
+  <main id="main-content" class="app-layout pb-8">
+    <section
+      class="grid gap-6 py-10 lg:grid-cols-[0.95fr_1.35fr] lg:items-stretch"
+    >
+      <aside class="glass-card relative overflow-hidden p-6 text-center">
+        <div
+          class="bg-accent/20 pointer-events-none absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full blur-3xl"
+          aria-hidden="true"
+        >
+        </div>
+        <img
+          src="/image/avatar.jpeg"
+          alt="WyiZhng avatar"
+          class="border-border shadow-accent/15 relative mx-auto size-32 rounded-[2rem] border object-cover shadow-2xl"
+        />
+        <p class="text-accent mt-6 text-sm font-semibold tracking-[0.22em]">
+          ABOUT ME
+        </p>
+        <h1 class="mt-2 text-4xl font-black">WyiZhng</h1>
+        <p class="text-muted-foreground mt-4 leading-8">
+          一个正在把前端、AI、工程实践和计算机视觉串成知识地图的技术学习者。
+        </p>
+        <div class="mt-6 grid grid-cols-2 gap-3">
+          <div class="border-border bg-muted/45 rounded-xl border p-3">
+            <p class="text-accent text-2xl font-black">8+</p>
+            <p class="text-muted-foreground text-xs">已迁移文章</p>
+          </div>
+          <div class="border-border bg-muted/45 rounded-xl border p-3">
+            <p class="text-accent text-2xl font-black">5</p>
+            <p class="text-muted-foreground text-xs">关注方向</p>
+          </div>
+        </div>
+      </aside>
 
-  <Main pageTitle={about.data.title} class="app-prose">
-    <Content />
-  </Main>
+      <section class="glass-card p-6 sm:p-8">
+        <p class="text-accent text-sm font-semibold tracking-[0.22em]">
+          PROFILE
+        </p>
+        <h2
+          class="gradient-text mt-3 text-4xl leading-tight font-black text-balance sm:text-5xl"
+        >
+          把学习过程变成可复用的资产
+        </h2>
+        <div class="app-prose mt-6 max-w-none">
+          <Content />
+        </div>
+      </section>
+    </section>
+
+    <section class="grid gap-6 pb-10 lg:grid-cols-2">
+      <div class="glass-card p-6">
+        <p class="text-accent text-sm font-semibold tracking-[0.18em]">STACK</p>
+        <h2 class="mt-2 text-2xl font-black">我关注的方向</h2>
+        <ul class="mt-5 flex flex-wrap gap-2">
+          {focusAreas.map(area => <li class="soft-chip">{area}</li>)}
+        </ul>
+      </div>
+
+      <div class="glass-card p-6">
+        <p class="text-accent text-sm font-semibold tracking-[0.18em]">
+          ROADMAP
+        </p>
+        <h2 class="mt-2 text-2xl font-black">博客会继续长成什么样</h2>
+        <ol class="mt-5 space-y-4">
+          {
+            timeline.map((item, index) => (
+              <li class="flex gap-4">
+                <span class="bg-accent text-accent-foreground grid size-8 shrink-0 place-items-center rounded-full text-sm font-bold">
+                  {index + 1}
+                </span>
+                <div>
+                  <h3 class="font-bold">{item.title}</h3>
+                  <p class="text-muted-foreground mt-1 text-sm leading-6">
+                    {item.desc}
+                  </p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+  </main>
 
   <Footer />
 </Layout>

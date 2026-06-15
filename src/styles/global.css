@@ -19,10 +19,54 @@
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+  body {
+    background:
+      radial-gradient(
+        circle at top left,
+        color-mix(in srgb, var(--accent) 16%, transparent),
+        transparent 30rem
+      ),
+      linear-gradient(180deg, var(--background), var(--background));
+  }
+  body::before {
+    position: fixed;
+    inset: 0;
+    z-index: -20;
+    pointer-events: none;
+    content: "";
+    background-image:
+      linear-gradient(
+        color-mix(in srgb, var(--border) 45%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--border) 45%, transparent) 1px,
+        transparent 1px
+      );
+    background-size: 44px 44px;
+    mask-image: linear-gradient(to bottom, black, transparent 78%);
+    opacity: 0.45;
+  }
+  body::after {
+    position: fixed;
+    inset: auto -12rem -18rem auto;
+    z-index: -10;
+    width: 34rem;
+    height: 34rem;
+    pointer-events: none;
+    content: "";
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--accent) 22%, transparent),
+      transparent 68%
+    );
+    filter: blur(12px);
+  }
 }
 
 @utility max-w-app {
-  @apply max-w-3xl;
+  @apply max-w-6xl;
 }
 
 @utility app-layout {
@@ -31,6 +75,18 @@
 
 @utility active-nav {
   @apply underline decoration-wavy decoration-2 underline-offset-8;
+}
+
+@utility glass-card {
+  @apply border-border bg-background/72 shadow-accent/5 rounded-2xl border shadow-xl backdrop-blur-xl;
+}
+
+@utility gradient-text {
+  @apply from-foreground via-accent to-foreground bg-gradient-to-r bg-clip-text text-transparent;
+}
+
+@utility soft-chip {
+  @apply border-border bg-muted/65 text-muted-foreground rounded-full border px-3 py-1 text-sm;
 }
 
 :target {

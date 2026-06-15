@@ -92,6 +92,12 @@ if (!ogImageUrl && config.features.dynamicOgImage) {
 const ogImage = ogImageUrl
   ? new URL(ogImageUrl, Astro.url.origin).href
   : undefined;
+
+const readingStats = [
+  { label: "标签", value: tags.length },
+  { label: "状态", value: "已发布" },
+  { label: "类型", value: "技术笔记" },
+];
 ---
 
 <PostLayout
@@ -108,56 +114,106 @@ const ogImage = ogImageUrl
 
   <main
     id="main-content"
-    class:list={["app-layout", { "mt-8": !config.features.showBackButton }]}
+    class:list={[
+      "app-layout",
+      "relative",
+      { "mt-8": !config.features.showBackButton },
+    ]}
     data-pagefind-body
   >
-    <h1
-      style={{ viewTransitionName: toTransitionName(title) }}
-      class="text-accent inline-block text-2xl font-bold sm:text-3xl"
-    >
-      {title}
-    </h1>
-
-    <div class="my-2 flex items-center gap-2">
-      <Datetime {pubDatetime} {modDatetime} {timezone} size="lg" />
-      <span
+    <section class="glass-card relative overflow-hidden p-6 sm:p-8">
+      <div
+        class="bg-accent/18 pointer-events-none absolute -top-28 -right-24 h-72 w-72 rounded-full blur-3xl"
         aria-hidden="true"
+      >
+      </div>
+      <p class="text-accent mb-4 text-sm font-semibold tracking-[0.22em]">
+        ARTICLE
+      </p>
+      <h1
+        style={{ viewTransitionName: toTransitionName(title) }}
+        class="gradient-text max-w-3xl text-4xl leading-tight font-black text-balance sm:text-6xl"
+      >
+        {title}
+      </h1>
+      <p class="text-muted-foreground mt-5 max-w-3xl text-lg leading-8">
+        {description}
+      </p>
+
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <Datetime {pubDatetime} {modDatetime} {timezone} size="lg" />
+        <span
+          aria-hidden="true"
+          class:list={[
+            "text-muted-foreground max-sm:hidden",
+            { hidden: !config.features.editPost?.enabled || hideEditPost },
+          ]}
+        >
+          /
+        </span>
+        <EditPost {hideEditPost} {post} class="max-sm:hidden" />
+      </div>
+    </section>
+
+    <div
+      class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_17rem] lg:items-start"
+    >
+      <article
+        id="article"
         class:list={[
-          "text-muted-foreground max-sm:hidden",
-          { hidden: !config.features.editPost?.enabled || hideEditPost },
+          "glass-card w-full min-w-0 p-5 sm:p-8",
+          "app-prose max-w-none",
+          "prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)",
         ]}
       >
-        |
-      </span>
-      <EditPost {hideEditPost} {post} class="max-sm:hidden" />
+        <Content />
+      </article>
+
+      <aside class="space-y-4 lg:sticky lg:top-6">
+        <div class="glass-card p-5">
+          <p class="text-accent text-sm font-semibold tracking-[0.18em]">
+            READING
+          </p>
+          <ul class="mt-4 grid gap-3">
+            {
+              readingStats.map(item => (
+                <li class="border-border bg-muted/45 flex items-center justify-between rounded-xl border px-3 py-2">
+                  <span class="text-muted-foreground text-sm">
+                    {item.label}
+                  </span>
+                  <span class="text-sm font-bold">{item.value}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div class="glass-card p-5">
+          <p class="text-accent mb-3 text-sm font-semibold tracking-[0.18em]">
+            TAGS
+          </p>
+          <ul class="flex flex-wrap gap-2">
+            {
+              tags.map(tag => (
+                <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" />
+              ))
+            }
+          </ul>
+        </div>
+
+        <div class="glass-card p-5">
+          <ShareLinks />
+        </div>
+
+        <EditPost class="sm:hidden" {hideEditPost} {post} />
+      </aside>
     </div>
-
-    <article
-      id="article"
-      class:list={[
-        "mt-8 w-full",
-        "app-prose max-w-app",
-        "prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)",
-      ]}
-    >
-      <Content />
-    </article>
-
-    <hr class="my-8 border-dashed" />
-
-    <EditPost class="sm:hidden" {hideEditPost} {post} />
 
     <BackToTopButton />
 
-    <ul class="mt-4 mb-8 flex flex-wrap gap-4 sm:my-8">
-      {tags.map(tag => <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" />)}
-    </ul>
-
-    <ShareLinks />
-
-    <hr class="my-8 border-dashed" />
-
-    <AdjacentPostNav {prevPost} {nextPost} />
+    <div class="my-8">
+      <AdjacentPostNav {prevPost} {nextPost} />
+    </div>
   </main>
   <Footer />
 </PostLayout>
@@ -200,10 +256,10 @@ const ogImage = ogImageUrl
       document.querySelectorAll("h2, h3, h4, h5, h6")
     );
     for (const heading of headings) {
-      heading.classList.add("group");
+      heading.classList.add("group", "relative");
       const link = document.createElement("a");
       link.className =
-        "heading-link ms-2 no-underline opacity-75 md:opacity-0 md:group-hover:opacity-100 md:focus:opacity-100";
+        "heading-link absolute -ms-6 no-underline opacity-0 transition group-hover:opacity-100 focus:opacity-100";
       link.href = "#" + heading.id;
 
       const span = document.createElement("span");
