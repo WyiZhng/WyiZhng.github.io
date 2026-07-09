@@ -1,11 +1,11 @@
 ---
 title: "Hello World"
 pubDatetime: 2025-04-17T10:30:33+08:00
-draft: false
+draft: true
 featured: false
 tags:
   - blog
-description: "Hexo 默认的 Hello World 示例文章"
+description: "Hexo 默认示例文章，作为迁移记录保留，不在正式列表展示"
 ---
 
 Welcome to [Hexo](https://hexo.io/)! This is your very first post. Check [documentation](https://hexo.io/docs/) for more info. If you get any problems when using Hexo, you can find the answer in [troubleshooting](https://hexo.io/docs/troubleshooting.html) or you can ask me on [GitHub](https://github.com/hexojs/hexo/issues).

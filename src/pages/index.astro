@@ -23,7 +23,7 @@ const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
 const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 const homePath = getRelativeLocaleUrl(locale, "");
-const topics = ["Vue", "Git", "AI", "YOLO", "工程化"];
+const topics = ["前端工程", "Vue", "Git", "AI 工具", "计算机视觉"];
 const stats = [
   { label: "文章", value: sortedPosts.length },
   { label: "方向", value: topics.length },
@@ -48,7 +48,7 @@ const stats = [
           >
           </div>
           <p class="text-accent mb-5 text-sm font-semibold tracking-[0.24em]">
-            FRONTEND · AI · NOTES
+            FRONTEND · ENGINEERING · AI
           </p>
           <h1
             class="gradient-text max-w-2xl text-5xl leading-tight font-black text-balance sm:text-7xl"
@@ -56,7 +56,7 @@ const stats = [
             YI's Blog
           </h1>
           <p class="text-muted-foreground mt-6 max-w-2xl text-lg leading-8">
-            记录技术学习、项目实践和问题复盘，把零散经验沉淀成能反复查阅的工程笔记。
+            记录前端工程、AI 工具和项目实践，把学习过程整理成可复用、可回看、可继续生长的技术笔记。
           </p>
 
           <div class="mt-8 flex flex-wrap gap-3">
@@ -101,7 +101,7 @@ const stats = [
               <p class="text-muted-foreground text-sm">Hi, I'm</p>
               <p class="text-2xl font-black">WyiZhng</p>
               <p class="text-muted-foreground mt-1 text-sm">
-                正在把技术碎片整理成自己的知识地图。
+                正在整理前端、工程化和 AI 实践中的问题与答案。
               </p>
             </div>
           </div>
@@ -162,7 +162,7 @@ const stats = [
           <div class="mb-4 flex items-end justify-between gap-4">
             <div>
               <p class="text-accent text-sm font-semibold tracking-[0.18em]">
-                LATEST
+                RECENT NOTES
               </p>
               <h2 class="mt-1 text-2xl font-bold tracking-wide">
                 {t.home.recentPosts}

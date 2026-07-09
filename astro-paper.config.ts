@@ -24,7 +24,7 @@ export default defineAstroPaperConfig({
     showBackButton: true,
     editPost: {
       enabled: true,
-      url: "https://github.com/WyiZhng/WyiZhng.github.io/edit/codex/astro-migration/",
+      url: "https://github.com/WyiZhng/WyiZhng.github.io/edit/main/",
     },
     search: "pagefind",
   },
