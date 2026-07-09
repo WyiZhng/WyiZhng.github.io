@@ -18,3 +18,10 @@ description: "关于 WyiZhng 和这个技术博客。"
 ## 我怎么使用这个博客
 
 我会把这里当成公开的学习日志：遇到问题时记录上下文，解决问题后整理方法，回头复盘时再把文章修得更清楚。比起追求一次写完，我更希望它持续变好。
+
+## 站点信息
+
+- 博客名称：YI's Blog
+- 作者：WyiZhng
+- GitHub：[WyiZhng](https://github.com/WyiZhng)
+- 地址：[https://wyizhng.github.io/](https://wyizhng.github.io/)

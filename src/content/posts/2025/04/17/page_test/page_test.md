@@ -138,8 +138,8 @@ favicon: /favicon.ico
 nickname: Jeremy Bentham
 ### this variable is MarkDown form.
 # 个人描述，可以修改成自己要显示的句子
-description: Lorem ipsum dolor sit amet, **consectetur adipiscing elit.**
-<br>Fusce eget urna vitae velit *eleifend interdum at ac* nisi.
+description: 记录前端学习、项目实践和阶段性复盘。
+<br>把零散经验整理成可以长期维护的技术笔记。
 # 个人头像图片
 avatar: /image/avatar.jpeg
 # main menu navigation
