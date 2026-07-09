@@ -9,11 +9,14 @@ import Footer from "@/components/Footer.astro";
 import Socials from "@/components/Socials.astro";
 import Card from "@/components/Card.astro";
 import LinkButton from "@/components/LinkButton.astro";
+import Datetime from "@/components/Datetime.astro";
 import { getSortedPosts } from "@/utils/getSortedPosts";
+import { getPostUrl } from "@/utils/getPostPaths";
+import { groupPostsByCategory } from "@/utils/postCategories";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
 
-const { socials, posts: postsConfig } = config;
+const { socials } = config;
 
 const locale = Astro.currentLocale ?? config.site.lang;
 const t = useTranslations(locale);
@@ -22,6 +25,8 @@ const posts = await getCollection("posts");
 const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
 const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
+const groupedPosts = groupPostsByCategory(sortedPosts);
+const activeGroups = groupedPosts.filter(group => group.posts.length > 0);
 const homePath = getRelativeLocaleUrl(locale, "");
 const topics = ["前端工程", "Vue", "Git", "AI 工具", "计算机视觉"];
 const stats = [
@@ -135,6 +140,78 @@ const stats = [
       </div>
     </section>
 
+    <section
+      id="knowledge-map"
+      class="grid gap-6 pb-10 lg:grid-cols-[17rem_minmax(0,1fr)] lg:items-start"
+    >
+      <aside class="glass-card p-4 lg:sticky lg:top-24">
+        <p class="text-accent px-2 text-xs font-semibold tracking-[0.22em]">
+          CATEGORIES
+        </p>
+        <nav class="mt-4 grid gap-1" aria-label="知识库专题">
+          {
+            activeGroups.map(group => (
+              <a
+                href={`#${group.id}`}
+                class="hover:bg-muted/70 hover:text-accent rounded-lg px-3 py-2 text-sm no-underline transition"
+              >
+                <span class="font-semibold">{group.title}</span>
+                <span class="text-muted-foreground ms-2 text-xs">
+                  {group.posts.length}
+                </span>
+              </a>
+            ))
+          }
+        </nav>
+      </aside>
+
+      <div class="grid gap-5">
+        {
+          activeGroups.map(group => (
+            <section id={group.id} class="glass-card scroll-mt-28 p-5 sm:p-6">
+              <div class="mb-5">
+                <p class="text-accent text-xs font-semibold tracking-[0.22em]">
+                  {group.id.toUpperCase()}
+                </p>
+                <h2 class="mt-1 text-2xl font-black">{group.title}</h2>
+                <p class="text-muted-foreground mt-2 max-w-2xl text-sm leading-7">
+                  {group.description}
+                </p>
+              </div>
+
+              <ul class="grid gap-3">
+                {group.posts.map(post => (
+                  <li class="border-border bg-background/65 hover:border-accent/60 rounded-xl border p-4 transition">
+                    <a
+                      href={getPostUrl(post.id, post.filePath, locale)}
+                      class="group block no-underline"
+                    >
+                      <div class="flex flex-wrap items-center gap-3">
+                        <Datetime {...post.data} />
+                        <div class="flex flex-wrap gap-2">
+                          {post.data.tags.slice(0, 3).map(tag => (
+                            <span class="text-muted-foreground bg-muted/60 rounded-full px-2 py-0.5 text-xs">
+                              #{tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <h3 class="group-hover:text-accent mt-3 text-lg font-bold transition">
+                        {post.data.title}
+                      </h3>
+                      <p class="text-muted-foreground mt-2 line-clamp-2 text-sm leading-7">
+                        {post.data.description}
+                      </p>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))
+        }
+      </div>
+    </section>
+
     {
       featuredPosts.length > 0 && (
         <section
@@ -170,7 +247,7 @@ const stats = [
             </div>
           </div>
           <ul class="grid gap-4">
-            {recentPosts.slice(0, postsConfig.perIndex).map(data => (
+            {recentPosts.slice(0, config.posts.perIndex).map(data => (
               <Card variant="h3" {...data} />
             ))}
           </ul>

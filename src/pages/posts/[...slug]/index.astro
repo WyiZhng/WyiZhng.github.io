@@ -7,6 +7,10 @@ import Datetime from "@/components/Datetime.astro";
 import Tag from "@/components/Tag.astro";
 import { getPostSlug, getPostUrl } from "@/utils/getPostPaths";
 import { getSortedPosts } from "@/utils/getSortedPosts";
+import {
+  getPostCategory,
+  groupPostsByCategory,
+} from "@/utils/postCategories";
 import { slugifyStr } from "@/utils/slugify";
 import { toTransitionName } from "@/utils/toTransitionName";
 import EditPost from "./_components/EditPost.astro";
@@ -93,6 +97,14 @@ const ogImage = ogImageUrl
   ? new URL(ogImageUrl, Astro.url.origin).href
   : undefined;
 
+const allPosts = getSortedPosts(await getCollection("posts"));
+const groupedPosts = groupPostsByCategory(allPosts).filter(
+  group => group.posts.length > 0
+);
+const activeCategory = getPostCategory(post);
+const categoryPosts =
+  groupedPosts.find(group => group.id === activeCategory.id)?.posts ?? [];
+
 const readingStats = [
   { label: "标签", value: tags.length },
   { label: "状态", value: "已发布" },
@@ -156,8 +168,60 @@ const readingStats = [
     </section>
 
     <div
-      class="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_17rem] lg:items-start"
+      class="mt-8 grid gap-6 xl:grid-cols-[17rem_minmax(0,1fr)_17rem] xl:items-start"
     >
+      <aside class="space-y-4 xl:sticky xl:top-24">
+        <div class="glass-card p-4">
+          <p class="text-accent px-2 text-xs font-semibold tracking-[0.22em]">
+            CATEGORIES
+          </p>
+          <nav class="mt-4 grid gap-1" aria-label="知识库专题">
+            {
+              groupedPosts.map(group => (
+                <a
+                  href={`/#${group.id}`}
+                  class:list={[
+                    "hover:bg-muted/70 hover:text-accent rounded-lg px-3 py-2 text-sm no-underline transition",
+                    {
+                      "bg-muted text-accent font-semibold":
+                        group.id === activeCategory.id,
+                    },
+                  ]}
+                >
+                  <span>{group.title}</span>
+                  <span class="text-muted-foreground ms-2 text-xs">
+                    {group.posts.length}
+                  </span>
+                </a>
+              ))
+            }
+          </nav>
+        </div>
+
+        <div class="glass-card p-4">
+          <p class="text-accent px-2 text-xs font-semibold tracking-[0.22em]">
+            {activeCategory.title}
+          </p>
+          <nav class="mt-4 grid gap-1" aria-label="当前专题文章">
+            {
+              categoryPosts.map(item => (
+                <a
+                  href={getPostUrl(item.id, item.filePath, locale)}
+                  class:list={[
+                    "hover:bg-muted/70 hover:text-accent rounded-lg px-3 py-2 text-sm leading-6 no-underline transition",
+                    {
+                      "bg-muted text-accent font-semibold": item.id === post.id,
+                    },
+                  ]}
+                >
+                  {item.data.title}
+                </a>
+              ))
+            }
+          </nav>
+        </div>
+      </aside>
+
       <article
         id="article"
         class:list={[
@@ -170,6 +234,18 @@ const readingStats = [
       </article>
 
       <aside class="space-y-4 lg:sticky lg:top-6">
+        <div class="glass-card hidden p-5 lg:block" data-pagefind-ignore>
+          <p class="text-accent mb-3 text-sm font-semibold tracking-[0.18em]">
+            CONTENTS
+          </p>
+          <nav
+            id="article-toc"
+            class="text-muted-foreground grid gap-2 text-sm"
+            aria-label="文章目录"
+          >
+          </nav>
+        </div>
+
         <div class="glass-card p-5">
           <p class="text-accent text-sm font-semibold tracking-[0.18em]">
             READING
@@ -270,6 +346,35 @@ const readingStats = [
     }
   }
   addHeadingLinks();
+
+  function initArticleToc() {
+    const toc = document.getElementById("article-toc");
+    const article = document.getElementById("article");
+    if (!toc || !article) return;
+
+    const headings = Array.from(
+      article.querySelectorAll("h2[id], h3[id]")
+    ).slice(0, 18);
+
+    if (!headings.length) {
+      toc.innerHTML =
+        '<span class="text-muted-foreground text-sm">暂无目录</span>';
+      return;
+    }
+
+    toc.innerHTML = headings
+      .map(heading => {
+        const level = heading.tagName === "H3" ? "ms-3" : "";
+        const label = Array.from(heading.childNodes)
+          .filter(node => node.nodeType === Node.TEXT_NODE)
+          .map(node => node.textContent)
+          .join("")
+          .trim();
+        return `<a class="hover:text-accent border-s border-border ps-3 leading-6 no-underline transition ${level}" href="#${heading.id}">${label}</a>`;
+      })
+      .join("");
+  }
+  initArticleToc();
 
   function attachCopyButtons() {
     const copyButtonLabel = "Copy";
