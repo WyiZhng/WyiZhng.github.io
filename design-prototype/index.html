@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="WyiZhng 的技术博客与个人作品集设计稿" />
+    <title>WyiZhng - AI Developer & Creative Technologist</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="home">
+    <a class="skip-link" href="#main-content">跳到正文</a>
+
+    <header class="nav-wrap" data-nav>
+      <div class="glass-nav">
+        <a class="brand" href="index.html" aria-label="WyiZhng 首页">
+          <span class="brand-symbol" aria-hidden="true">W</span>
+          <span>WyiZhng</span>
+        </a>
+
+        <nav class="nav-links" id="primary-nav" aria-label="主导航">
+          <a href="#home" aria-current="page">Home</a>
+          <a href="blog.html">Blog</a>
+          <a href="#about">About</a>
+          <a href="#projects">Projects</a>
+          <a href="#contact">Contact</a>
+        </nav>
+
+        <div class="nav-actions">
+          <button class="icon-button" type="button" data-search-open aria-label="搜索" title="搜索">
+            <img src="../src/assets/icons/IconSearch.svg" alt="" />
+          </button>
+          <button class="icon-button" type="button" data-theme-toggle aria-label="切换深色模式" title="切换主题">
+            <img data-theme-icon src="../src/assets/icons/IconMoon.svg" alt="" />
+          </button>
+          <button
+            class="icon-button menu-toggle"
+            type="button"
+            data-menu-toggle
+            aria-controls="primary-nav"
+            aria-expanded="false"
+            aria-label="打开菜单"
+            title="菜单"
+          >
+            <img data-menu-icon src="../src/assets/icons/IconMenuDeep.svg" alt="" />
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <section class="hero" id="home" aria-labelledby="hero-title">
+        <img
+          class="hero-visual"
+          data-parallax
+          src="assets/hero-visual.png"
+          alt="银色金属与透明光学玻璃组成的抽象科技装置"
+        />
+        <div class="hero-scrim" aria-hidden="true"></div>
+        <div class="page-shell hero-content">
+          <p class="hero-greeting page-enter">你好，我是</p>
+          <h1 id="hero-title" class="page-enter">WyiZhng<span>.</span></h1>
+          <p class="hero-role page-enter">AI Developer / Full-stack Engineer / Creative Technologist</p>
+          <p class="hero-intro page-enter">
+            我专注于 AI 应用、现代 Web 与工程实践，也把学习、实验和思考写成可反复查阅的技术笔记。
+          </p>
+          <div class="hero-actions page-enter">
+            <a class="button button-primary" href="blog.html">
+              查看博客
+              <img src="../src/assets/icons/IconArrowRight.svg" alt="" />
+            </a>
+            <a class="button button-glass" href="#about">了解更多</a>
+          </div>
+          <div class="hero-status page-enter">
+            <span class="status-dot" aria-hidden="true"></span>
+            Open to ideas, collaboration and thoughtful conversations
+          </div>
+        </div>
+        <a class="scroll-cue" href="#about" aria-label="继续浏览">
+          <span>Scroll</span>
+          <span class="scroll-line" aria-hidden="true"></span>
+        </a>
+      </section>
+
+      <section class="section about-section" id="about">
+        <div class="page-shell">
+          <div class="section-heading" data-reveal>
+            <p class="section-kicker">ABOUT / 01</p>
+            <h2>在技术、设计与表达之间，<br />建立长期价值。</h2>
+            <p>
+              我关注的不只是功能是否实现，也关心系统是否清晰、体验是否自然，以及知识能否被准确传递。
+            </p>
+          </div>
+
+          <div class="expertise-grid">
+            <article class="glass-card expertise-card" data-reveal>
+              <span class="card-number">01</span>
+              <div class="expertise-icon" aria-hidden="true">AI</div>
+              <h3>AI / Agent Development</h3>
+              <p>探索智能工作流、模型能力与可落地的 AI 应用体验。</p>
+            </article>
+            <article class="glass-card expertise-card" data-reveal>
+              <span class="card-number">02</span>
+              <div class="expertise-icon" aria-hidden="true">&lt;/&gt;</div>
+              <h3>Full-stack Development</h3>
+              <p>从交互界面到服务架构，构建完整、可靠且易维护的产品。</p>
+            </article>
+            <article class="glass-card expertise-card" data-reveal>
+              <span class="card-number">03</span>
+              <div class="expertise-icon" aria-hidden="true">◫</div>
+              <h3>Design Thinking</h3>
+              <p>让信息层级、视觉语言和使用路径共同服务于真实目标。</p>
+            </article>
+            <article class="glass-card expertise-card" data-reveal>
+              <span class="card-number">04</span>
+              <div class="expertise-icon" aria-hidden="true">Aa</div>
+              <h3>Writing & Research</h3>
+              <p>把复杂问题拆开、验证并整理成能被理解和复用的内容。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section posts-section" id="featured-posts">
+        <div class="page-shell">
+          <div class="section-title-row" data-reveal>
+            <div>
+              <p class="section-kicker">FEATURED / 02</p>
+              <h2>精选文章</h2>
+            </div>
+            <a class="text-link" href="blog.html">
+              浏览全部文章
+              <img src="../src/assets/icons/IconArrowRight.svg" alt="" />
+            </a>
+          </div>
+
+          <div class="featured-grid">
+            <article class="glass-card post-card post-card-large" data-reveal>
+              <a class="post-cover" href="article.html" aria-label="阅读：创建博客技术分析">
+                <img src="../public/2025/04/17/创建博客技术分析/1.png" alt="Hexo 博客页面截图" />
+              </a>
+              <div class="post-card-body">
+                <div class="post-meta"><time datetime="2025-04-17">2025.04.17</time><span>12 min read</span></div>
+                <a href="article.html"><h3>创建博客技术分析</h3></a>
+                <p>比较静态博客与动态内容系统，梳理一个个人技术站点从选择到落地的完整过程。</p>
+                <div class="tag-row"><span>Astro</span><span>Blog</span><span>GitHub Pages</span></div>
+              </div>
+            </article>
+
+            <article class="glass-card post-card" data-reveal>
+              <a class="post-cover" href="article.html" aria-label="阅读：异步 Promise 和 async/await">
+                <img src="../public/2025/04/17/创建博客技术分析/5.png" alt="代码编辑器中的 JavaScript 示例" />
+              </a>
+              <div class="post-card-body">
+                <div class="post-meta"><time datetime="2025-06-13">2025.06.13</time><span>8 min read</span></div>
+                <a href="article.html"><h3>异步 Promise 和 async/await</h3></a>
+                <p>用生活化例子理解 JavaScript 异步流程的核心概念。</p>
+                <div class="tag-row"><span>JavaScript</span><span>Frontend</span></div>
+              </div>
+            </article>
+
+            <article class="glass-card post-card" data-reveal>
+              <a class="post-cover" href="article.html" aria-label="阅读：Git 基础以及 VSCode 版本控制">
+                <img src="../public/2025/04/17/创建博客技术分析/31.PNG" alt="VSCode 中的 Git 操作菜单" />
+              </a>
+              <div class="post-card-body">
+                <div class="post-meta"><time datetime="2025-06-12">2025.06.12</time><span>10 min read</span></div>
+                <a href="article.html"><h3>Git 基础以及 VSCode 版本控制</h3></a>
+                <p>从分支管理到团队协作，一份随时可以回看的 Git 操作手册。</p>
+                <div class="tag-row"><span>Git</span><span>Workflow</span></div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section projects-section" id="projects">
+        <div class="page-shell">
+          <div class="section-heading projects-heading" data-reveal>
+            <p class="section-kicker">PROJECTS / 03</p>
+            <h2>把想法做成可以运行、<br />可以验证的作品。</h2>
+          </div>
+
+          <div class="projects-grid">
+            <article class="glass-card project-card project-featured" data-reveal>
+              <div class="project-visual project-visual-blog">
+                <img src="../public/default-og.jpg" alt="AstroPaper 博客界面展示" />
+              </div>
+              <div class="project-copy">
+                <p class="project-type">DESIGN & ENGINEERING</p>
+                <h3>Astro Blog Evolution</h3>
+                <p>将旧 Hexo 内容迁移为现代 Astro 架构，并重新建立设计系统、搜索与内容体验。</p>
+                <a class="text-link" href="article.html">查看案例 <img src="../src/assets/icons/IconArrowRight.svg" alt="" /></a>
+              </div>
+            </article>
+
+            <article class="glass-card project-card" data-reveal>
+              <div class="project-visual project-code" aria-hidden="true">
+                <span>precision</span><strong>0.92</strong>
+                <span>recall</span><strong>0.88</strong>
+                <span>mAP50</span><strong>0.94</strong>
+              </div>
+              <div class="project-copy">
+                <p class="project-type">AI / COMPUTER VISION</p>
+                <h3>YOLO Training Lab</h3>
+                <p>围绕训练指标、数据配置与模型表现建立可解释的分析记录。</p>
+              </div>
+            </article>
+
+            <article class="glass-card project-card" data-reveal>
+              <div class="project-visual knowledge-map" aria-hidden="true">
+                <span>Frontend</span><span>AI</span><span>Git</span><span>Architecture</span>
+              </div>
+              <div class="project-copy">
+                <p class="project-type">KNOWLEDGE SYSTEM</p>
+                <h3>Developer Knowledge Map</h3>
+                <p>将零散的学习记录组织为可检索、可关联、可持续生长的知识库。</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section contact-section" id="contact">
+        <div class="page-shell">
+          <div class="glass-card contact-panel" data-reveal>
+            <p class="section-kicker">CONTACT / 04</p>
+            <h2>有值得一起思考的事情？<br />我们可以聊聊。</h2>
+            <p>关于 AI、Web、内容设计或一个尚未成形的想法，都欢迎联系。</p>
+            <div class="contact-actions">
+              <a class="button button-primary" href="mailto:491222058@qq.com">发送邮件</a>
+              <a class="button button-glass" href="https://github.com/WyiZhng">GitHub</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="page-shell footer-main">
+        <div><a class="footer-brand" href="#home">WyiZhng.</a><p>AI, code, design and thoughtful writing.</p></div>
+        <div class="footer-links" aria-label="社交链接">
+          <a href="https://github.com/WyiZhng">GitHub</a>
+          <span title="链接待配置">X / Twitter</span>
+          <span title="链接待配置">LinkedIn</span>
+          <a href="mailto:491222058@qq.com">Email</a>
+        </div>
+      </div>
+      <div class="page-shell footer-bottom"><span>© <span data-year></span> WyiZhng</span><span>Designed with clarity and curiosity.</span></div>
+    </footer>
+
+    <dialog class="search-dialog" data-search-dialog aria-labelledby="search-title">
+      <div class="search-dialog-head">
+        <div><p class="section-kicker">QUICK SEARCH</p><h2 id="search-title">搜索内容</h2></div>
+        <button class="icon-button" type="button" data-search-close aria-label="关闭搜索" title="关闭">
+          <img src="../src/assets/icons/IconX.svg" alt="" />
+        </button>
+      </div>
+      <label class="search-input-wrap">
+        <img src="../src/assets/icons/IconSearch.svg" alt="" />
+        <input data-global-search type="search" placeholder="搜索文章、项目或主题" autocomplete="off" />
+      </label>
+      <div class="quick-results">
+        <a href="article.html" data-global-item="Astro Blog 创建博客 静态 GitHub Pages"><span>创建博客技术分析</span><small>文章</small></a>
+        <a href="blog.html" data-global-item="Promise async JavaScript 前端"><span>异步 Promise 和 async/await</span><small>文章</small></a>
+        <a href="#projects" data-global-item="YOLO AI 训练 计算机视觉"><span>YOLO Training Lab</span><small>项目</small></a>
+      </div>
+      <p class="search-empty" data-global-empty hidden>没有找到相关内容。</p>
+    </dialog>
+
+    <script src="prototype.js"></script>
+  </body>
+</html>

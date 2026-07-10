@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="创建博客技术分析 - WyiZhng" />
+    <title>创建博客技术分析 - WyiZhng</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="article">
+    <div class="reading-progress" aria-hidden="true"><span data-progress></span></div>
+    <a class="skip-link" href="#article-content">跳到正文</a>
+
+    <header class="nav-wrap" data-nav>
+      <div class="glass-nav">
+        <a class="brand" href="index.html" aria-label="WyiZhng 首页"><span class="brand-symbol" aria-hidden="true">W</span><span>WyiZhng</span></a>
+        <nav class="nav-links" id="primary-nav" aria-label="主导航">
+          <a href="index.html">Home</a><a href="blog.html" aria-current="page">Blog</a><a href="index.html#about">About</a><a href="index.html#projects">Projects</a><a href="index.html#contact">Contact</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button" type="button" data-search-open aria-label="搜索" title="搜索"><img src="../src/assets/icons/IconSearch.svg" alt="" /></button>
+          <button class="icon-button" type="button" data-theme-toggle aria-label="切换深色模式" title="切换主题"><img data-theme-icon src="../src/assets/icons/IconMoon.svg" alt="" /></button>
+          <button class="icon-button menu-toggle" type="button" data-menu-toggle aria-controls="primary-nav" aria-expanded="false" aria-label="打开菜单" title="菜单"><img data-menu-icon src="../src/assets/icons/IconMenuDeep.svg" alt="" /></button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <header class="article-masthead page-shell">
+        <a class="article-back" href="blog.html"><img src="../src/assets/icons/IconArrowLeft.svg" alt="" />返回 Blog</a>
+        <div data-reveal>
+          <div class="article-category"><span>DESIGN</span><span>FRONTEND</span></div>
+          <h1>创建博客技术分析</h1>
+          <p>个人博客搭建技术对比与实现细则，包括静态生成、内容管理和长期维护方式。</p>
+          <div class="article-byline">
+            <span class="byline-mark" aria-hidden="true">W</span>
+            <div><strong>WyiZhng</strong><span>2025 年 4 月 17 日 · 12 min read</span></div>
+          </div>
+        </div>
+      </header>
+
+      <div class="article-grid page-shell">
+        <article class="article-surface" id="article-content" data-reveal>
+          <p class="article-lead">博客的技术方案很多，但真正重要的不是框架名称，而是它能不能让你更愿意写、方便维护，并且长期稳定地运行。</p>
+
+          <h2 id="static">为什么个人博客适合静态生成</h2>
+          <p>对于以文章为主的个人网站，内容通常在发布后不会频繁变化。构建时把 Markdown 转换成 HTML，访问者拿到的就是完整页面，不需要等待服务器查询数据库。</p>
+          <p>这让部署和备份都变得简单：文章跟着代码一起保存，站点可以直接发布到 GitHub Pages，也不需要持续维护一台服务器。</p>
+
+          <aside class="article-callout"><span>KEY TAKEAWAY</span><p>静态不是一种视觉风格，而是一种发布方式。页面是否好看，仍然取决于排版、内容层级和细节设计。</p></aside>
+
+          <h2 id="compare">Hexo、WordPress 与 Astro</h2>
+          <p>Hexo 上手快、生态成熟；WordPress 有完整后台，更适合多人维护和复杂业务；Astro 则保留了静态站点的轻量，同时提供现代组件化开发体验。</p>
+
+          <div class="table-wrap" role="region" aria-label="技术方案比较" tabindex="0">
+            <table><thead><tr><th>方案</th><th>内容方式</th><th>部署成本</th><th>适合场景</th></tr></thead><tbody><tr><td>Hexo</td><td>Markdown</td><td>低</td><td>快速建立博客</td></tr><tr><td>WordPress</td><td>在线后台</td><td>中</td><td>多人和动态功能</td></tr><tr><td>Astro</td><td>Markdown / MDX</td><td>低</td><td>现代定制型博客</td></tr></tbody></table>
+          </div>
+
+          <figure><img src="../public/2025/04/17/创建博客技术分析/1.png" alt="早期 Hexo 博客首页" /><figcaption>早期 Hexo 页面：内容完整，视觉层仍有很大的定制空间。</figcaption></figure>
+
+          <h2 id="structure">先建立内容结构，再处理视觉</h2>
+          <p>文章、标签、归档和搜索属于内容架构；字体、颜色、留白和动效属于视觉层。把两层分开之后，重新设计就不会影响原来的文章数据。</p>
+
+          <pre class="code-block"><span class="code-filename">project-structure.txt</span><button type="button" data-copy-code>复制</button><code>src/
+├─ content/posts/     # Markdown 文章
+├─ components/        # 页面组件
+├─ pages/             # 路由入口
+└─ styles/            # 视觉规范</code></pre>
+
+          <h2 id="decision">最终选择</h2>
+          <p>对这个博客而言，保留 Astro 是更合适的方案。接下来只需要重新定义首页、文章列表、阅读页和全局设计变量，不必重新迁移内容。</p>
+          <blockquote>一个好博客不需要表现得像复杂产品。它只需要让内容容易找到，让阅读保持舒服，并且让作者愿意继续写下去。</blockquote>
+
+          <div class="article-end"><span>Thanks for reading.</span><div class="article-share"><a href="mailto:?subject=创建博客技术分析">Email</a><a href="https://github.com/WyiZhng">GitHub</a></div></div>
+        </article>
+
+        <aside class="glass-card article-toc" aria-label="文章目录" data-reveal>
+          <p>ON THIS PAGE</p>
+          <ol><li><a href="#static">为什么适合静态生成</a></li><li><a href="#compare">方案比较</a></li><li><a href="#structure">内容与视觉分层</a></li><li><a href="#decision">最终选择</a></li></ol>
+          <a class="toc-edit" href="https://github.com/WyiZhng/WyiZhng.github.io">在 GitHub 上编辑</a>
+        </aside>
+      </div>
+
+      <nav class="article-next page-shell" aria-label="相邻文章">
+        <a class="glass-card" href="article.html"><span>PREVIOUS</span><strong>Vue Router 学习笔记</strong></a>
+        <a class="glass-card" href="article.html"><span>NEXT</span><strong>系统项目框架整理</strong></a>
+      </nav>
+    </main>
+
+    <footer class="site-footer">
+      <div class="page-shell footer-main"><div><a class="footer-brand" href="index.html">WyiZhng.</a><p>AI, code, design and thoughtful writing.</p></div><div class="footer-links"><a href="https://github.com/WyiZhng">GitHub</a><span title="链接待配置">X / Twitter</span><span title="链接待配置">LinkedIn</span><a href="mailto:491222058@qq.com">Email</a></div></div>
+      <div class="page-shell footer-bottom"><span>© <span data-year></span> WyiZhng</span><span>Designed with clarity and curiosity.</span></div>
+    </footer>
+
+    <dialog class="search-dialog" data-search-dialog aria-labelledby="search-title">
+      <div class="search-dialog-head"><div><p class="section-kicker">QUICK SEARCH</p><h2 id="search-title">搜索内容</h2></div><button class="icon-button" type="button" data-search-close aria-label="关闭搜索" title="关闭"><img src="../src/assets/icons/IconX.svg" alt="" /></button></div>
+      <label class="search-input-wrap"><img src="../src/assets/icons/IconSearch.svg" alt="" /><input data-global-search type="search" placeholder="搜索文章、项目或主题" autocomplete="off" /></label>
+      <div class="quick-results"><a href="article.html" data-global-item="Astro Blog 创建博客 静态 GitHub Pages"><span>创建博客技术分析</span><small>文章</small></a><a href="blog.html" data-global-item="Promise async JavaScript 前端"><span>异步 Promise 和 async/await</span><small>文章</small></a><a href="index.html#projects" data-global-item="YOLO AI 训练 计算机视觉"><span>YOLO Training Lab</span><small>项目</small></a></div>
+      <p class="search-empty" data-global-empty hidden>没有找到相关内容。</p>
+    </dialog>
+    <script src="prototype.js"></script>
+  </body>
+</html>
