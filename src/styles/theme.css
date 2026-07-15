@@ -7,30 +7,50 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-surface: var(--surface);
+  --color-surface-subtle: var(--surface-subtle);
   --font-app:
-    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
+    "Inter", "SF Pro Text", "SF Pro Display", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", sans-serif;
+  --font-editorial:
+    "Source Han Serif SC", "Noto Serif CJK SC", "Songti SC", SimSun,
+    ui-serif, Georgia, serif;
 }
 
 /* Light theme values */
 :root,
 [data-theme="light"] {
-  --background: #fbfcff;
-  --foreground: #1f2937;
-  --accent: #2563eb;
+  color-scheme: light;
+  --background: #fcfcfb;
+  --foreground: #1b1d21;
+  --accent: #245da8;
   --accent-foreground: #ffffff;
-  --muted: #eef4ff;
-  --muted-foreground: #64748b;
-  --border: #dbe4f0;
+  --muted: #f1f2f3;
+  --muted-foreground: #646a73;
+  --border: #dfe1e4;
+  --border-strong: #c7cbd0;
+  --surface: #ffffff;
+  --surface-subtle: #f6f6f5;
+  --layout-width: 72rem;
+  --content-width: 46rem;
+  --reading-width: 42rem;
+  --section-space: clamp(4rem, 8vw, 7rem);
+  --header-height: 4.25rem;
 }
 
 /* Dark theme values */
 [data-theme="dark"] {
-  --background: #101827;
-  --foreground: #e5edf7;
-  --accent: #38bdf8;
-  --accent-foreground: #ffffff;
-  --muted: #1c2a3f;
-  --muted-foreground: #9fb0c4;
-  --border: #263853;
+  color-scheme: dark;
+  --background: #111315;
+  --foreground: #e8e9eb;
+  --accent: #82afe9;
+  --accent-foreground: #111315;
+  --muted: #1c1f23;
+  --muted-foreground: #a4a8ae;
+  --border: #30343a;
+  --border-strong: #464b53;
+  --surface: #15171a;
+  --surface-subtle: #1a1d21;
 }

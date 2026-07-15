@@ -68,7 +68,7 @@
     }
 
     img {
-      @apply border-border shadow-accent/10 mx-auto rounded-2xl border shadow-lg;
+      @apply border-border mx-auto rounded-lg border shadow-none;
     }
 
     img[role="button"] {
@@ -97,7 +97,7 @@
     }
 
     code {
-      @apply bg-muted/75 text-accent border-border rounded-md border px-1.5 py-1 wrap-break-word before:content-none after:content-none;
+      @apply bg-muted/75 text-accent border-border rounded-sm border px-1.5 py-1 wrap-break-word before:content-none after:content-none;
     }
 
     .astro-code code {
@@ -105,7 +105,7 @@
     }
 
     blockquote {
-      @apply bg-muted/55 border-s-accent/80 rounded-xl py-3 wrap-break-word opacity-90;
+      @apply border-s-accent/80 rounded-none border-s-2 bg-transparent py-0 ps-5 wrap-break-word opacity-90;
     }
 
     details:not(.callout) {
@@ -117,7 +117,7 @@
     }
 
     pre {
-      @apply shadow-accent/5 focus-visible:outline-accent max-w-full overflow-x-auto rounded-2xl shadow-lg focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-dashed;
+      @apply focus-visible:outline-accent max-w-full overflow-x-auto rounded-lg shadow-none focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-dashed;
     }
   }
 
