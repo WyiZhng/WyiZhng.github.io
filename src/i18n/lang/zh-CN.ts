@@ -4,6 +4,8 @@ export default {
   nav: {
     home: "首页",
     posts: "文章",
+    notes: "笔记",
+    projects: "项目",
     tags: "标签",
     about: "关于",
     archives: "归档",
@@ -52,6 +54,12 @@ export default {
 
     searchTitle: "搜索",
     searchDesc: "搜索站内文章。",
+
+    notesTitle: "短笔记",
+    notesDesc: "比长文更轻量的观察、判断与过程记录。",
+
+    projectsTitle: "项目与作品",
+    projectsDesc: "正在维护的项目、实验和阶段性研究成果。",
   },
   a11y: {
     skipToContent: "跳到正文",

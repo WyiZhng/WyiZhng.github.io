@@ -1,0 +1,107 @@
+---
+import { getCollection } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
+import IconGithub from "@/assets/icons/socials/github.svg";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Main from "@/components/Main.astro";
+import Footer from "@/components/Footer.astro";
+import { useTranslations } from "@/i18n";
+import config from "@/config";
+
+const locale = Astro.currentLocale ?? config.site.lang;
+const t = useTranslations(locale);
+const projects = (await getCollection("projects")).sort(
+  (projectA, projectB) => projectA.data.order - projectB.data.order
+);
+
+const resolveHref = (href: string) =>
+  /^https?:\/\//.test(href)
+    ? href
+    : getRelativeLocaleUrl(locale, href.replace(/^\/+/, ""));
+---
+
+<Layout
+  title={`${t.pages.projectsTitle} | ${config.site.title}`}
+  description={t.pages.projectsDesc}
+>
+  <Header />
+  <Breadcrumb />
+
+  <Main
+    pageTitle={t.pages.projectsTitle}
+    pageDesc={t.pages.projectsDesc}
+    eyebrow="PROJECTS / 项目"
+    searchable
+  >
+    <span class="sr-only" data-pagefind-filter="type:项目">项目</span>
+    <ul class="border-border grid border-t md:grid-cols-2">
+      {
+        projects.map((project, index) => (
+          <li
+            class:list={[
+              "border-border border-b py-7 md:px-6",
+              { "md:border-e": index % 2 === 0 },
+              { "md:ps-0": index % 2 === 0 },
+              { "md:pe-0": index % 2 === 1 },
+            ]}
+          >
+            <article class="flex h-full flex-col">
+              <div class="text-muted-foreground flex items-center justify-between gap-4 text-xs">
+                <span class="text-accent font-semibold tracking-[0.12em]">
+                  {project.data.status}
+                </span>
+                <span>{project.data.period}</span>
+              </div>
+              <h2 class="mt-4 text-xl font-semibold">{project.data.title}</h2>
+              <p class="text-muted-foreground mt-3 grow leading-7">
+                {project.data.description}
+              </p>
+              <ul class="text-muted-foreground mt-5 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+                {project.data.stack.map(item => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+              <div class="mt-6 flex flex-wrap items-center gap-4 text-sm">
+                {project.data.href && (
+                  <a
+                    href={resolveHref(project.data.href)}
+                    target={
+                      project.data.href.startsWith("http")
+                        ? "_blank"
+                        : undefined
+                    }
+                    rel={
+                      project.data.href.startsWith("http")
+                        ? "noopener noreferrer"
+                        : undefined
+                    }
+                    class="text-accent inline-flex items-center gap-1 font-medium no-underline"
+                  >
+                    查看项目
+                    <IconArrowRight class="size-4" />
+                  </a>
+                )}
+                {project.data.repository && (
+                  <a
+                    href={project.data.repository}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-muted-foreground hover:text-accent inline-flex items-center gap-1 no-underline"
+                  >
+                    <IconGithub class="size-4 fill-transparent stroke-current" />
+                    源码
+                  </a>
+                )}
+              </div>
+            </article>
+          </li>
+        ))
+      }
+    </ul>
+  </Main>
+
+  <Footer />
+</Layout>

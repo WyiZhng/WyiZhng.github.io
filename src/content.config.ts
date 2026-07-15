@@ -34,4 +34,33 @@ const pages = defineCollection({
   }),
 });
 
-export const collections = { posts, pages };
+const notes = defineCollection({
+  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/notes" }),
+  schema: z.object({
+    title: z.string(),
+    summary: z.string(),
+    pubDatetime: z.date(),
+    tags: z.array(z.string()).default([]),
+    draft: z.boolean().default(false),
+  }),
+});
+
+const projects = defineCollection({
+  loader: glob({
+    pattern: "**/[^_]*.{md,mdx}",
+    base: "./src/content/projects",
+  }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    status: z.string(),
+    period: z.string(),
+    stack: z.array(z.string()).default([]),
+    href: z.string().optional(),
+    repository: z.url().optional(),
+    featured: z.boolean().default(false),
+    order: z.number().default(0),
+  }),
+});
+
+export const collections = { posts, pages, notes, projects };

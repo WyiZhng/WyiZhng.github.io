@@ -6,6 +6,7 @@ type Props = {
   pageTitle: string | [string, string];
   pageDesc?: string;
   eyebrow?: string;
+  searchable?: boolean;
   class?: string;
 };
 
@@ -13,6 +14,7 @@ const {
   pageTitle,
   pageDesc,
   eyebrow = "INDEX",
+  searchable = false,
   class: className,
 } = Astro.props;
 
@@ -24,6 +26,7 @@ const backUrl = config.features.showBackButton
 
 <main
   data-backUrl={backUrl}
+  data-pagefind-body={searchable ? true : undefined}
   id="main-content"
   class:list={["app-layout pb-4", className]}
 >

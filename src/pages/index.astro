@@ -9,7 +9,10 @@ import Footer from "@/components/Footer.astro";
 import Socials from "@/components/Socials.astro";
 import Card from "@/components/Card.astro";
 import LinkButton from "@/components/LinkButton.astro";
+import Datetime from "@/components/Datetime.astro";
 import { getSortedPosts } from "@/utils/getSortedPosts";
+import { getSortedNotes } from "@/utils/getSortedNotes";
+import { getNoteUrl } from "@/utils/getNoteUrl";
 import { getAssetPath } from "@/utils/withBase";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
@@ -27,7 +30,19 @@ const featuredPosts = (
 ).slice(0, 2);
 const featuredIds = new Set(featuredPosts.map(post => post.id));
 const recentPosts = sortedPosts.filter(post => !featuredIds.has(post.id));
+const notes = getSortedNotes(await getCollection("notes")).slice(0, 3);
+const projects = (await getCollection("projects"))
+  .sort(
+    (projectA, projectB) =>
+      Number(projectB.data.featured) - Number(projectA.data.featured) ||
+      projectA.data.order - projectB.data.order
+  )
+  .slice(0, 3);
 const homePath = getRelativeLocaleUrl(locale, "");
+const resolveProjectHref = (href: string) =>
+  /^https?:\/\//.test(href)
+    ? href
+    : getRelativeLocaleUrl(locale, href.replace(/^\/+/, ""));
 const topics = [
   "金融市场与 FICC",
   "人工智能",
@@ -118,6 +133,28 @@ const topics = [
       </aside>
     </section>
 
+    <section
+      id="about-overview"
+      class="border-border grid gap-6 border-b py-10 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-10 sm:py-12"
+    >
+      <p class="text-accent text-xs font-semibold tracking-[0.18em]">
+        00 / PROFILE
+      </p>
+      <div class="max-w-3xl">
+        <h2 class="text-2xl font-semibold">在技术与市场之间建立可复用的理解</h2>
+        <p class="text-muted-foreground mt-4 leading-8">
+          我关注金融市场、FICC、人工智能与数据分析，并通过长期写作沉淀研究方法、工程经验和持续学习中的判断。
+        </p>
+        <LinkButton
+          href={getRelativeLocaleUrl(locale, "about")}
+          class="text-accent mt-5 text-sm font-medium no-underline"
+        >
+          查看研究档案
+          <IconArrowRight class="size-4 rtl:-rotate-180" />
+        </LinkButton>
+      </div>
+    </section>
+
     {
       featuredPosts.length > 0 && (
         <section id="featured" class="border-border border-b py-14 sm:py-18">
@@ -147,7 +184,10 @@ const topics = [
 
     {
       recentPosts.length > 0 && (
-        <section id="recent-posts" class="py-14 sm:py-18">
+        <section
+          id="recent-posts"
+          class="border-border border-b py-14 sm:py-18"
+        >
           <div class="mb-7">
             <p class="text-accent text-xs font-semibold tracking-[0.18em]">
               02 / LATEST
@@ -168,6 +208,110 @@ const topics = [
               <IconArrowRight class="size-4 rtl:-rotate-180" />
             </LinkButton>
           </div>
+        </section>
+      )
+    }
+
+    {
+      projects.length > 0 && (
+        <section id="projects" class="border-border border-b py-14 sm:py-18">
+          <div class="mb-7 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p class="text-accent text-xs font-semibold tracking-[0.18em]">
+                03 / PROJECTS
+              </p>
+              <h2 class="mt-2 text-2xl font-semibold">项目与实践</h2>
+            </div>
+            <LinkButton
+              href={getRelativeLocaleUrl(locale, "projects")}
+              class="text-muted-foreground hover:text-accent text-sm no-underline"
+            >
+              查看全部项目
+              <IconArrowRight class="size-4 rtl:-rotate-180" />
+            </LinkButton>
+          </div>
+
+          <ul class="border-border border-t">
+            {projects.map(project => (
+              <li class="border-border grid gap-4 border-b py-6 sm:grid-cols-[9rem_minmax(0,1fr)_auto] sm:items-start sm:gap-8">
+                <div class="text-muted-foreground text-xs leading-6">
+                  <p class="text-accent font-semibold tracking-[0.12em]">
+                    {project.data.status}
+                  </p>
+                  <p>{project.data.period}</p>
+                </div>
+                <article>
+                  <h3 class="text-xl font-semibold">{project.data.title}</h3>
+                  <p class="text-muted-foreground mt-2 leading-7">
+                    {project.data.description}
+                  </p>
+                  <p class="text-muted-foreground mt-3 text-xs">
+                    {project.data.stack.join(" / ")}
+                  </p>
+                </article>
+                {project.data.href && (
+                  <a
+                    href={resolveProjectHref(project.data.href)}
+                    target={
+                      project.data.href.startsWith("http")
+                        ? "_blank"
+                        : undefined
+                    }
+                    rel={
+                      project.data.href.startsWith("http")
+                        ? "noopener noreferrer"
+                        : undefined
+                    }
+                    class="text-accent inline-flex items-center gap-1 text-sm font-medium no-underline"
+                  >
+                    查看
+                    <IconArrowRight class="size-4 rtl:-rotate-180" />
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      notes.length > 0 && (
+        <section id="notes" class="py-14 sm:py-18">
+          <div class="mb-7 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p class="text-accent text-xs font-semibold tracking-[0.18em]">
+                04 / NOTES
+              </p>
+              <h2 class="mt-2 text-2xl font-semibold">短笔记</h2>
+            </div>
+            <LinkButton
+              href={getRelativeLocaleUrl(locale, "notes")}
+              class="text-muted-foreground hover:text-accent text-sm no-underline"
+            >
+              查看全部笔记
+              <IconArrowRight class="size-4 rtl:-rotate-180" />
+            </LinkButton>
+          </div>
+
+          <ul class="border-border border-t">
+            {notes.map(note => (
+              <li class="border-border grid gap-3 border-b py-5 sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-8">
+                <Datetime pubDatetime={note.data.pubDatetime} />
+                <article>
+                  <a
+                    href={getNoteUrl(note.id, locale)}
+                    class="hover:text-accent no-underline transition-colors"
+                  >
+                    <h3 class="text-lg font-semibold">{note.data.title}</h3>
+                  </a>
+                  <p class="text-muted-foreground mt-2 leading-7">
+                    {note.data.summary}
+                  </p>
+                </article>
+              </li>
+            ))}
+          </ul>
         </section>
       )
     }

@@ -119,6 +119,7 @@ const readingMinutes = getReadingMinutes(post.body ?? "");
       { "mt-8": !config.features.showBackButton },
     ]}
     data-pagefind-body
+    data-pagefind-filter="type:文章"
   >
     <header
       class="content-measure border-border mx-auto border-b pt-6 pb-10 sm:pt-10 sm:pb-12"
@@ -725,8 +726,11 @@ const readingMinutes = getReadingMinutes(post.body ?? "");
 
     try {
       await mermaid.run({ nodes: diagrams });
-    } catch (error) {
-      console.error("Unable to render Mermaid diagram", error);
+    } catch {
+      for (const diagram of diagrams) {
+        diagram.setAttribute("role", "status");
+        diagram.textContent = "图表暂时无法渲染，请稍后重试。";
+      }
     }
   }
 

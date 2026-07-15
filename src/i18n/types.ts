@@ -2,6 +2,8 @@ export interface UIStrings {
   nav: {
     home: string;
     posts: string;
+    notes: string;
+    projects: string;
     tags: string;
     about: string;
     archives: string;
@@ -50,6 +52,12 @@ export interface UIStrings {
 
     searchTitle: string;
     searchDesc: string;
+
+    notesTitle: string;
+    notesDesc: string;
+
+    projectsTitle: string;
+    projectsDesc: string;
   };
   a11y: {
     skipToContent: string;

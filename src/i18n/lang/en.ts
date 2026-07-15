@@ -4,6 +4,8 @@ export default {
   nav: {
     home: "Home",
     posts: "Posts",
+    notes: "Notes",
+    projects: "Projects",
     tags: "Tags",
     about: "About",
     archives: "Archives",
@@ -52,6 +54,12 @@ export default {
 
     searchTitle: "Search",
     searchDesc: "Search any article ...",
+
+    notesTitle: "Notes",
+    notesDesc: "Short observations, decisions, and work in progress.",
+
+    projectsTitle: "Projects",
+    projectsDesc: "Selected projects, experiments, and ongoing work.",
   },
   a11y: {
     skipToContent: "Skip to content",

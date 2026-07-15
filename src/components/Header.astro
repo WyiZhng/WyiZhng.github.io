@@ -96,6 +96,24 @@ const navLinkClass =
         </li>
         <li class="col-span-2">
           <a
+            href={getRelativeLocaleUrl(locale, "notes")}
+            class:list={[navLinkClass, { "active-nav": isActive("/notes") }]}
+            aria-current={isActive("/notes") ? "page" : undefined}
+          >
+            {t.nav.notes}
+          </a>
+        </li>
+        <li class="col-span-2">
+          <a
+            href={getRelativeLocaleUrl(locale, "projects")}
+            class:list={[navLinkClass, { "active-nav": isActive("/projects") }]}
+            aria-current={isActive("/projects") ? "page" : undefined}
+          >
+            {t.nav.projects}
+          </a>
+        </li>
+        <li class="col-span-2">
+          <a
             href={getRelativeLocaleUrl(locale, "tags")}
             class:list={[navLinkClass, { "active-nav": isActive("/tags") }]}
             aria-current={isActive("/tags") ? "page" : undefined}
