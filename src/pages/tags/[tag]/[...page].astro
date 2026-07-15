@@ -45,8 +45,9 @@ const t = useTranslations(locale);
   <Main
     pageTitle={`${t.pages.tagTitle}: ${tagName}`}
     pageDesc={`${t.pages.tagDesc} "${tagName}".`}
+    eyebrow="TOPIC / 主题"
   >
-    <ul>
+    <ul class="border-border border-t">
       {page.data.map(data => <Card {...data} />)}
     </ul>
   </Main>

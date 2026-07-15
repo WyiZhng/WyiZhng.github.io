@@ -5,10 +5,16 @@ import config from "@/config";
 type Props = {
   pageTitle: string | [string, string];
   pageDesc?: string;
+  eyebrow?: string;
   class?: string;
 };
 
-const { pageTitle, pageDesc, class: className } = Astro.props;
+const {
+  pageTitle,
+  pageDesc,
+  eyebrow = "INDEX",
+  class: className,
+} = Astro.props;
 
 const locale = Astro.currentLocale ?? config.site.lang;
 const backUrl = config.features.showBackButton
@@ -21,9 +27,22 @@ const backUrl = config.features.showBackButton
   id="main-content"
   class:list={["app-layout pb-4", className]}
 >
-  <h1 class="text-2xl font-semibold sm:text-3xl">{pageTitle}</h1>
-  <p class="mt-2 mb-6 italic">{pageDesc}</p>
-  <slot />
+  <header class="border-border border-b py-10 sm:py-14">
+    <p class="text-accent text-xs font-semibold tracking-[0.18em]">
+      {eyebrow}
+    </p>
+    <h1 class="font-editorial mt-3 text-3xl font-semibold sm:text-5xl">
+      {pageTitle}
+    </h1>
+    {
+      pageDesc && (
+        <p class="text-muted-foreground mt-4 max-w-2xl leading-7">{pageDesc}</p>
+      )
+    }
+  </header>
+  <div class="py-8 sm:py-10">
+    <slot />
+  </div>
 </main>
 
 <script>

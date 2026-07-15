@@ -12,11 +12,14 @@ export async function GET() {
     title: config.site.title,
     description: config.site.description,
     site: config.site.url,
+    customData: `<language>${config.site.lang}</language>`,
     items: sortedPosts.map(({ data, id, filePath }) => ({
       link: getPostUrl(id, filePath, config.site.lang),
       title: data.title,
       description: data.description,
-      pubDate: new Date(data.modDatetime ?? data.pubDatetime),
+      pubDate: new Date(data.pubDatetime),
+      categories: data.tags,
+      author: data.author,
     })),
   });
 }

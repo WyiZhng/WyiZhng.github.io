@@ -32,14 +32,20 @@ const t = useTranslations(locale);
 
   <Breadcrumb />
 
-  <Main pageTitle={t.pages.searchTitle} pageDesc={t.pages.searchDesc}>
-    <div
-      id="pagefind-search"
-      transition:persist
-      data-backurl={backUrl}
-      data-bundle-path={pagefindBundlePath}
-      data-search-placeholder={t.a11y.searchPlaceholder}
-    >
+  <Main
+    pageTitle={t.pages.searchTitle}
+    pageDesc={t.pages.searchDesc}
+    eyebrow="SEARCH / 检索"
+  >
+    <div class="content-measure">
+      <div
+        id="pagefind-search"
+        transition:persist
+        data-backurl={backUrl}
+        data-bundle-path={pagefindBundlePath}
+        data-search-placeholder={t.a11y.searchPlaceholder}
+      >
+      </div>
     </div>
   </Main>
 
@@ -156,8 +162,17 @@ const t = useTranslations(locale);
       color: var(--accent);
       outline-offset: 1px;
       outline-color: var(--accent);
-      text-decoration-style: dashed;
+      text-decoration-style: solid;
       text-underline-offset: 4px;
+    }
+
+    .pagefind-ui__result {
+      padding-block: 1.5rem;
+    }
+
+    mark {
+      background: color-mix(in srgb, var(--accent) 16%, transparent);
+      color: var(--foreground);
     }
 
     .pagefind-ui__result-title a:focus-visible,

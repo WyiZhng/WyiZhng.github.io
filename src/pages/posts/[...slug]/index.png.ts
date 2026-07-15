@@ -1,19 +1,76 @@
 import type { APIRoute } from "astro";
+import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
-import { fontData, experimental_getFontFileURL } from "astro:assets";
-import satori from "satori";
+import { fileURLToPath } from "node:url";
 import sharp from "sharp";
-import { getFontPathByWeight } from "@/utils/getFontPathByWeight";
 import { getPostSlug } from "@/utils/getPostPaths";
 import config from "@/config";
 
-export async function getStaticPaths() {
-  if (!config.features.dynamicOgImage) {
-    return [];
-  }
+const WIDTH = 1200;
+const HEIGHT = 630;
 
-  const posts = await getCollection("posts").then(p =>
-    p.filter(({ data }) => !data.draft && !data.ogImage)
+const regularFontPath = fileURLToPath(
+  import.meta
+    .resolve("@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-400-normal.woff")
+);
+const boldFontPath = fileURLToPath(
+  import.meta
+    .resolve("@fontsource/noto-sans-sc/files/noto-sans-sc-chinese-simplified-700-normal.woff")
+);
+
+function escapePango(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&apos;");
+}
+
+function createTextLayer({
+  text,
+  color,
+  fontSize,
+  fontfile,
+  width,
+  height,
+  left,
+  top,
+  align = "left",
+}: {
+  text: string;
+  color: string;
+  fontSize: number;
+  fontfile: string;
+  width: number;
+  height: number;
+  left: number;
+  top: number;
+  align?: "left" | "center" | "right";
+}): sharp.OverlayOptions {
+  return {
+    input: {
+      text: {
+        text: `<span foreground="${color}">${escapePango(text)}</span>`,
+        font: `Noto Sans SC ${fontSize}`,
+        fontfile,
+        width,
+        height,
+        align,
+        rgba: true,
+        wrap: "word-char",
+      },
+    },
+    left,
+    top,
+  };
+}
+
+export async function getStaticPaths() {
+  if (!config.features.dynamicOgImage) return [];
+
+  const posts = await getCollection("posts").then(entries =>
+    entries.filter(({ data }) => !data.draft && !data.ogImage)
   );
 
   return posts.map(post => ({
@@ -22,175 +79,104 @@ export async function getStaticPaths() {
   }));
 }
 
-export const GET: APIRoute = async ({ props, url }) => {
+export const GET: APIRoute = async ({ props }) => {
   if (!config.features.dynamicOgImage) {
     return new Response(null, { status: 404, statusText: "Not found" });
   }
 
-  const fonts = fontData["--font-google-sans-code"];
-  const regularFontPath = getFontPathByWeight(fonts, 400);
-  const boldFontPath = getFontPathByWeight(fonts, 700);
+  const post = props as CollectionEntry<"posts">;
+  const { title, description, pubDatetime, tags } = post.data;
+  const date = new Intl.DateTimeFormat("zh-CN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: config.site.timezone,
+  })
+    .format(pubDatetime)
+    .replaceAll("/", ".");
+  const tagLine = tags
+    .slice(0, 3)
+    .map(tag => `#${tag}`)
+    .join("   ");
 
-  if (regularFontPath === undefined || boldFontPath === undefined) {
-    throw new Error("Cannot find the font path.");
-  }
+  const frame = Buffer.from(`
+    <svg width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}" xmlns="http://www.w3.org/2000/svg">
+      <rect width="${WIDTH}" height="${HEIGHT}" fill="#fcfcfb" />
+      <rect x="64" y="56" width="1072" height="518" rx="8" fill="none" stroke="#dfe1e4" stroke-width="2" />
+      <rect x="64" y="56" width="1072" height="8" fill="#245da8" />
+      <line x1="90" y1="500" x2="1110" y2="500" stroke="#dfe1e4" stroke-width="2" />
+    </svg>
+  `);
 
-  const [regularData, boldData] = await Promise.all([
-    fetch(experimental_getFontFileURL(regularFontPath, url)).then(res =>
-      res.arrayBuffer()
-    ),
-    fetch(experimental_getFontFileURL(boldFontPath, url)).then(res =>
-      res.arrayBuffer()
-    ),
-  ]);
-
-  const svg = await satori(
-    {
-      type: "div",
-      props: {
-        style: {
-          background: "#fefbfb",
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        },
-        children: [
-          {
-            type: "div",
-            props: {
-              style: {
-                position: "absolute",
-                top: "-1px",
-                right: "-1px",
-                border: "4px solid #000",
-                background: "#ecebeb",
-                opacity: "0.9",
-                borderRadius: "4px",
-                display: "flex",
-                justifyContent: "center",
-                margin: "2.5rem",
-                width: "88%",
-                height: "80%",
-              },
-            },
-          },
-          {
-            type: "div",
-            props: {
-              style: {
-                border: "4px solid #000",
-                background: "#fefbfb",
-                borderRadius: "4px",
-                display: "flex",
-                justifyContent: "center",
-                margin: "2rem",
-                width: "88%",
-                height: "80%",
-              },
-              children: {
-                type: "div",
-                props: {
-                  style: {
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    margin: "20px",
-                    width: "90%",
-                    height: "90%",
-                  },
-                  children: [
-                    {
-                      type: "p",
-                      props: {
-                        style: {
-                          fontSize: 72,
-                          fontWeight: "bold",
-                          maxHeight: "84%",
-                          overflow: "hidden",
-                        },
-                        children: props.data.title,
-                      },
-                    },
-                    {
-                      type: "div",
-                      props: {
-                        style: {
-                          display: "flex",
-                          justifyContent: "space-between",
-                          width: "100%",
-                          marginBottom: "8px",
-                          fontSize: 28,
-                        },
-                        children: [
-                          {
-                            type: "span",
-                            props: {
-                              children: [
-                                "by ",
-                                {
-                                  type: "span",
-                                  props: {
-                                    style: { color: "transparent" },
-                                    children: '"',
-                                  },
-                                },
-                                {
-                                  type: "span",
-                                  props: {
-                                    style: {
-                                      overflow: "hidden",
-                                      fontWeight: "bold",
-                                    },
-                                    children: props.data.author,
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                          {
-                            type: "span",
-                            props: {
-                              style: { overflow: "hidden", fontWeight: "bold" },
-                              children: config.site.title,
-                            },
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              },
-            },
-          },
-        ],
-      },
+  const pngBuffer = await sharp({
+    create: {
+      width: WIDTH,
+      height: HEIGHT,
+      channels: 4,
+      background: "#fcfcfb",
     },
-    {
-      width: 1200,
-      height: 630,
-      embedFont: true,
-      fonts: [
-        {
-          name: "Google Sans Code",
-          data: regularData,
-          weight: 400,
-          style: "normal",
-        },
-        {
-          name: "Google Sans Code",
-          data: boldData,
-          weight: 700,
-          style: "normal",
-        },
-      ],
-    }
-  );
-
-  const pngBuffer = await sharp(Buffer.from(svg)).png().toBuffer();
+  })
+    .composite([
+      { input: frame, left: 0, top: 0 },
+      createTextLayer({
+        text: "YI'S BLOG / RESEARCH NOTE",
+        color: "#245da8",
+        fontSize: 18,
+        fontfile: regularFontPath,
+        width: 900,
+        height: 40,
+        left: 90,
+        top: 94,
+      }),
+      createTextLayer({
+        text: title,
+        color: "#1b1d21",
+        fontSize: 58,
+        fontfile: boldFontPath,
+        width: 1020,
+        height: 225,
+        left: 90,
+        top: 145,
+      }),
+      createTextLayer({
+        text: description,
+        color: "#646a73",
+        fontSize: 21,
+        fontfile: regularFontPath,
+        width: 960,
+        height: 82,
+        left: 90,
+        top: 395,
+      }),
+      createTextLayer({
+        text: tagLine || "#研究笔记",
+        color: "#646a73",
+        fontSize: 17,
+        fontfile: regularFontPath,
+        width: 760,
+        height: 38,
+        left: 90,
+        top: 526,
+      }),
+      createTextLayer({
+        text: date,
+        color: "#1b1d21",
+        fontSize: 17,
+        fontfile: regularFontPath,
+        width: 220,
+        height: 38,
+        left: 890,
+        top: 526,
+        align: "right",
+      }),
+    ])
+    .png({ compressionLevel: 9 })
+    .toBuffer();
 
   return new Response(new Uint8Array(pngBuffer), {
-    headers: { "Content-Type": "image/png" },
+    headers: {
+      "Content-Type": "image/png",
+      "Cache-Control": "public, max-age=31536000, immutable",
+    },
   });
 };

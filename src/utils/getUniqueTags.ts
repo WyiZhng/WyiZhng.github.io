@@ -5,6 +5,7 @@ import { slugifyStr } from "./slugify";
 type Tag = {
   tag: string;
   tagName: string;
+  count: number;
 };
 
 /**
@@ -15,14 +16,21 @@ type Tag = {
  * - Uniqueness is based on the slug (so differently-cased labels collapse)
  */
 export function getUniqueTags(posts: CollectionEntry<"posts">[]) {
-  const tags: Tag[] = posts
-    .filter(postFilter)
-    .flatMap(post => post.data.tags)
-    .map(tag => ({ tag: slugifyStr(tag), tagName: tag }))
-    .filter(
-      (value, index, self) =>
-        self.findIndex(tag => tag.tag === value.tag) === index
-    )
-    .sort((tagA, tagB) => tagA.tag.localeCompare(tagB.tag));
-  return tags;
+  const tagIndex = new Map<string, Tag>();
+
+  for (const post of posts.filter(postFilter)) {
+    for (const tagName of new Set(post.data.tags)) {
+      const tag = slugifyStr(tagName);
+      const current = tagIndex.get(tag);
+      tagIndex.set(tag, {
+        tag,
+        tagName: current?.tagName ?? tagName,
+        count: (current?.count ?? 0) + 1,
+      });
+    }
+  }
+
+  return Array.from(tagIndex.values()).sort((tagA, tagB) =>
+    tagA.tag.localeCompare(tagB.tag)
+  );
 }

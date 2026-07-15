@@ -4,23 +4,41 @@ import config from "@/config";
 
 type Props = {
   title?: string;
+  articleTitle?: string;
   description?: string;
   ogImage?: string;
   canonicalURL?: string;
   pubDatetime?: Date;
   modDatetime?: Date | null;
+  tags?: string[];
 };
 
 const { site } = config;
 
-const { title, description, ogImage, canonicalURL, pubDatetime, modDatetime } =
-  Astro.props;
+const {
+  title,
+  articleTitle,
+  description,
+  ogImage,
+  canonicalURL,
+  pubDatetime,
+  modDatetime,
+  tags = [],
+} = Astro.props;
+
+const articleURL =
+  canonicalURL ?? new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
 
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  headline: title ?? site.title,
-  image: ogImage,
+  headline: articleTitle ?? title ?? site.title,
+  description,
+  url: articleURL,
+  mainEntityOfPage: articleURL,
+  inLanguage: site.lang,
+  ...(ogImage && { image: [ogImage] }),
+  ...(tags.length > 0 && { keywords: tags.join(", ") }),
   ...(pubDatetime && { datePublished: pubDatetime.toISOString() }),
   ...(modDatetime && { dateModified: modDatetime.toISOString() }),
   author: [
@@ -30,6 +48,11 @@ const structuredData = {
       ...(site.profile && { url: site.profile }),
     },
   ],
+  publisher: {
+    "@type": "Person",
+    name: site.author,
+    ...(site.profile && { url: site.profile }),
+  },
 };
 ---
 
@@ -54,6 +77,8 @@ const structuredData = {
         />
       )
     }
+    <meta property="article:author" content={site.author} />
+    {tags.map(tag => <meta property="article:tag" content={tag} />)}
 
     <script
       type="application/ld+json"
