@@ -7,12 +7,9 @@ import Datetime from "@/components/Datetime.astro";
 import Tag from "@/components/Tag.astro";
 import { getPostSlug, getPostUrl } from "@/utils/getPostPaths";
 import { getSortedPosts } from "@/utils/getSortedPosts";
-import {
-  getPostCategory,
-  groupPostsByCategory,
-} from "@/utils/postCategories";
 import { slugifyStr } from "@/utils/slugify";
 import { toTransitionName } from "@/utils/toTransitionName";
+import { getReadingMinutes } from "@/utils/getReadingTime";
 import EditPost from "./_components/EditPost.astro";
 import ShareLinks from "./_components/ShareLinks.astro";
 import BackButton from "./_components/BackButton.astro";
@@ -97,19 +94,7 @@ const ogImage = ogImageUrl
   ? new URL(ogImageUrl, Astro.url.origin).href
   : undefined;
 
-const allPosts = getSortedPosts(await getCollection("posts"));
-const groupedPosts = groupPostsByCategory(allPosts).filter(
-  group => group.posts.length > 0
-);
-const activeCategory = getPostCategory(post);
-const categoryPosts =
-  groupedPosts.find(group => group.id === activeCategory.id)?.posts ?? [];
-
-const readingStats = [
-  { label: "标签", value: tags.length },
-  { label: "状态", value: "已发布" },
-  { label: "类型", value: "技术笔记" },
-];
+const readingMinutes = getReadingMinutes(post.body ?? "");
 ---
 
 <PostLayout
@@ -133,161 +118,107 @@ const readingStats = [
     ]}
     data-pagefind-body
   >
-    <section class="glass-card relative overflow-hidden p-6 sm:p-8">
-      <div
-        class="bg-accent/18 pointer-events-none absolute -top-28 -right-24 h-72 w-72 rounded-full blur-3xl"
-        aria-hidden="true"
-      >
-      </div>
-      <p class="text-accent mb-4 text-sm font-semibold tracking-[0.22em]">
-        ARTICLE
+    <header
+      class="content-measure border-border mx-auto border-b pt-6 pb-10 sm:pt-10 sm:pb-12"
+    >
+      <p class="text-accent mb-5 text-xs font-semibold tracking-[0.18em]">
+        RESEARCH NOTE
       </p>
       <h1
         style={{ viewTransitionName: toTransitionName(title) }}
-        class="gradient-text max-w-3xl text-4xl leading-tight font-black text-balance sm:text-6xl"
+        class="font-editorial text-3xl leading-tight font-semibold text-balance sm:text-5xl"
       >
         {title}
       </h1>
-      <p class="text-muted-foreground mt-5 max-w-3xl text-lg leading-8">
+      <p class="text-muted-foreground mt-5 max-w-2xl text-lg leading-8">
         {description}
       </p>
 
-      <div class="mt-6 flex flex-wrap items-center gap-3">
+      <div
+        class="text-muted-foreground mt-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm"
+      >
         <Datetime {pubDatetime} {modDatetime} {timezone} size="lg" />
-        <span
-          aria-hidden="true"
-          class:list={[
-            "text-muted-foreground max-sm:hidden",
-            { hidden: !config.features.editPost?.enabled || hideEditPost },
-          ]}
-        >
-          /
-        </span>
+        <span aria-hidden="true">/</span>
+        <span>{readingMinutes} 分钟阅读</span>
         <EditPost {hideEditPost} {post} class="max-sm:hidden" />
       </div>
-    </section>
+
+      <ul class="mt-6 flex flex-wrap gap-x-4 gap-y-2">
+        {tags.map(tag => <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" />)}
+      </ul>
+    </header>
 
     <div
-      class="mt-8 grid gap-6 xl:grid-cols-[17rem_minmax(0,1fr)_17rem] xl:items-start"
+      class="mx-auto mt-10 grid max-w-[62rem] gap-10 lg:grid-cols-[minmax(0,var(--content-width))_13rem] lg:items-start lg:gap-12"
     >
-      <aside class="space-y-4 xl:sticky xl:top-24">
-        <div class="glass-card p-4">
-          <p class="text-accent px-2 text-xs font-semibold tracking-[0.22em]">
-            CATEGORIES
-          </p>
-          <nav class="mt-4 grid gap-1" aria-label="知识库专题">
-            {
-              groupedPosts.map(group => (
-                <a
-                  href={`/#${group.id}`}
-                  class:list={[
-                    "hover:bg-muted/70 hover:text-accent rounded-lg px-3 py-2 text-sm no-underline transition",
-                    {
-                      "bg-muted text-accent font-semibold":
-                        group.id === activeCategory.id,
-                    },
-                  ]}
-                >
-                  <span>{group.title}</span>
-                  <span class="text-muted-foreground ms-2 text-xs">
-                    {group.posts.length}
-                  </span>
-                </a>
-              ))
-            }
-          </nav>
-        </div>
-
-        <div class="glass-card p-4">
-          <p class="text-accent px-2 text-xs font-semibold tracking-[0.22em]">
-            {activeCategory.title}
-          </p>
-          <nav class="mt-4 grid gap-1" aria-label="当前专题文章">
-            {
-              categoryPosts.map(item => (
-                <a
-                  href={getPostUrl(item.id, item.filePath, locale)}
-                  class:list={[
-                    "hover:bg-muted/70 hover:text-accent rounded-lg px-3 py-2 text-sm leading-6 no-underline transition",
-                    {
-                      "bg-muted text-accent font-semibold": item.id === post.id,
-                    },
-                  ]}
-                >
-                  {item.data.title}
-                </a>
-              ))
-            }
-          </nav>
-        </div>
-      </aside>
-
-      <article
-        id="article"
-        class:list={[
-          "glass-card w-full min-w-0 p-5 sm:p-8",
-          "app-prose max-w-none",
-          "prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)",
-        ]}
-      >
-        <Content />
-      </article>
-
-      <aside class="space-y-4 lg:sticky lg:top-6">
-        <div class="glass-card hidden p-5 lg:block" data-pagefind-ignore>
-          <p class="text-accent mb-3 text-sm font-semibold tracking-[0.18em]">
-            CONTENTS
-          </p>
+      <div class="min-w-0">
+        <details
+          class="border-border mb-8 border-y py-4 lg:hidden"
+          data-pagefind-ignore
+        >
+          <summary class="font-medium">文章目录</summary>
           <nav
-            id="article-toc"
-            class="text-muted-foreground grid gap-2 text-sm"
+            class="article-toc text-muted-foreground mt-4 grid gap-2 text-sm"
             aria-label="文章目录"
           >
           </nav>
-        </div>
+        </details>
 
-        <div class="glass-card p-5">
-          <p class="text-accent text-sm font-semibold tracking-[0.18em]">
-            READING
-          </p>
-          <ul class="mt-4 grid gap-3">
-            {
-              readingStats.map(item => (
-                <li class="border-border bg-muted/45 flex items-center justify-between rounded-xl border px-3 py-2">
-                  <span class="text-muted-foreground text-sm">
-                    {item.label}
-                  </span>
-                  <span class="text-sm font-bold">{item.value}</span>
-                </li>
-              ))
-            }
-          </ul>
-        </div>
+        <article
+          id="article"
+          class:list={[
+            "app-prose w-full max-w-none min-w-0",
+            "prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)",
+          ]}
+        >
+          <Content />
+        </article>
 
-        <div class="glass-card p-5">
-          <p class="text-accent mb-3 text-sm font-semibold tracking-[0.18em]">
-            TAGS
-          </p>
-          <ul class="flex flex-wrap gap-2">
-            {
-              tags.map(tag => (
-                <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" />
-              ))
-            }
-          </ul>
-        </div>
-
-        <div class="glass-card p-5">
+        <div
+          class="border-border mt-12 flex flex-col gap-5 border-t pt-6 sm:flex-row sm:items-start sm:justify-between"
+          data-pagefind-ignore
+        >
           <ShareLinks />
+          <EditPost class="sm:hidden" {hideEditPost} {post} />
         </div>
+      </div>
 
-        <EditPost class="sm:hidden" {hideEditPost} {post} />
+      <aside
+        class="border-border hidden border-s ps-5 lg:sticky lg:top-24 lg:block"
+        data-pagefind-ignore
+      >
+        <section>
+          <p class="text-accent mb-4 text-xs font-semibold tracking-[0.18em]">
+            CONTENTS / 目录
+          </p>
+          <nav
+            class="article-toc text-muted-foreground grid gap-2 text-sm"
+            aria-label="文章目录"
+          >
+          </nav>
+        </section>
+
+        <section class="border-border mt-7 border-t pt-6">
+          <p class="text-accent text-xs font-semibold tracking-[0.18em]">
+            READING / 阅读
+          </p>
+          <dl class="text-muted-foreground mt-4 grid gap-3 text-sm">
+            <div class="flex justify-between gap-3">
+              <dt>预计时长</dt>
+              <dd class="text-foreground">{readingMinutes} 分钟</dd>
+            </div>
+            <div class="flex justify-between gap-3">
+              <dt>标签数量</dt>
+              <dd class="text-foreground">{tags.length}</dd>
+            </div>
+          </dl>
+        </section>
       </aside>
     </div>
 
     <BackToTopButton />
 
-    <div class="my-8">
+    <div class="mx-auto my-10 max-w-[62rem]">
       <AdjacentPostNav {prevPost} {nextPost} />
     </div>
   </main>
@@ -296,12 +227,14 @@ const readingStats = [
 
 <script is:inline data-astro-rerun>
   function createProgressBar() {
+    if (document.querySelector(".progress-container")) return;
+
     const progressContainer = document.createElement("div");
     progressContainer.className =
-      "progress-container fixed top-0 z-10 h-1 w-full bg-background";
+      "progress-container fixed top-0 z-50 h-0.5 w-full bg-background";
 
     const progressBar = document.createElement("div");
-    progressBar.className = "progress-bar h-1 w-0 bg-accent";
+    progressBar.className = "progress-bar h-0.5 w-0 bg-accent";
     progressBar.id = "myBar";
 
     progressContainer.appendChild(progressBar);
@@ -329,55 +262,92 @@ const readingStats = [
 
   function addHeadingLinks() {
     const headings = Array.from(
-      document.querySelectorAll("h2, h3, h4, h5, h6")
+      document.querySelectorAll(
+        "#article h2[id], #article h3[id], #article h4[id]"
+      )
     );
     for (const heading of headings) {
+      if (heading.querySelector(".heading-link")) continue;
+
       heading.classList.add("group", "relative");
       const link = document.createElement("a");
       link.className =
-        "heading-link absolute -ms-6 no-underline opacity-0 transition group-hover:opacity-100 focus:opacity-100";
+        "heading-link text-muted-foreground hover:text-accent absolute -ms-6 no-underline opacity-0 transition group-hover:opacity-100 focus:opacity-100";
       link.href = "#" + heading.id;
+      link.setAttribute(
+        "aria-label",
+        `链接到章节：${heading.textContent ?? ""}`
+      );
 
       const span = document.createElement("span");
       span.ariaHidden = "true";
       span.innerText = "#";
       link.appendChild(span);
-      heading.appendChild(link);
+      heading.insertBefore(link, heading.firstChild);
     }
   }
   addHeadingLinks();
 
   function initArticleToc() {
-    const toc = document.getElementById("article-toc");
+    const tocContainers = Array.from(document.querySelectorAll(".article-toc"));
     const article = document.getElementById("article");
-    if (!toc || !article) return;
+    if (!tocContainers.length || !article) return;
 
     const headings = Array.from(
       article.querySelectorAll("h2[id], h3[id]")
     ).slice(0, 18);
 
-    if (!headings.length) {
-      toc.innerHTML =
-        '<span class="text-muted-foreground text-sm">暂无目录</span>';
-      return;
+    for (const toc of tocContainers) {
+      toc.replaceChildren();
+
+      if (!headings.length) {
+        const empty = document.createElement("span");
+        empty.className = "text-muted-foreground text-sm";
+        empty.textContent = "暂无目录";
+        toc.appendChild(empty);
+        continue;
+      }
+
+      for (const heading of headings) {
+        const clone = heading.cloneNode(true);
+        clone.querySelector?.(".heading-link")?.remove();
+
+        const link = document.createElement("a");
+        link.className =
+          "toc-link border-border hover:border-accent hover:text-accent border-s ps-3 leading-6 no-underline transition-colors";
+        if (heading.tagName === "H3") link.classList.add("ms-3");
+        link.href = `#${heading.id}`;
+        link.dataset.headingId = heading.id;
+        link.textContent = clone.textContent?.trim() ?? heading.id;
+        toc.appendChild(link);
+      }
     }
 
-    toc.innerHTML = headings
-      .map(heading => {
-        const level = heading.tagName === "H3" ? "ms-3" : "";
-        const label = Array.from(heading.childNodes)
-          .filter(node => node.nodeType === Node.TEXT_NODE)
-          .map(node => node.textContent)
-          .join("")
-          .trim();
-        return `<a class="hover:text-accent border-s border-border ps-3 leading-6 no-underline transition ${level}" href="#${heading.id}">${label}</a>`;
-      })
-      .join("");
+    const tocLinks = Array.from(document.querySelectorAll(".toc-link"));
+    const setActiveHeading = id => {
+      for (const link of tocLinks) {
+        const active = link.dataset.headingId === id;
+        link.classList.toggle("text-accent", active);
+        link.classList.toggle("border-accent", active);
+        if (active) link.setAttribute("aria-current", "location");
+        else link.removeAttribute("aria-current");
+      }
+    };
+
+    const observer = new IntersectionObserver(
+      entries => {
+        const visible = entries.find(entry => entry.isIntersecting);
+        if (visible) setActiveHeading(visible.target.id);
+      },
+      { rootMargin: "-20% 0px -70%", threshold: 0 }
+    );
+
+    headings.forEach(heading => observer.observe(heading));
   }
   initArticleToc();
 
   function attachCopyButtons() {
-    const copyButtonLabel = "Copy";
+    const copyButtonLabel = "复制";
     const codeBlocks = Array.from(document.querySelectorAll("pre"));
 
     for (const codeBlock of codeBlocks) {
@@ -393,7 +363,7 @@ const readingStats = [
         : "-top-3";
 
       const copyButton = document.createElement("button");
-      copyButton.className = `copy-code absolute end-3 ${topClass} rounded bg-muted border border-muted px-2 py-1 text-xs leading-4 text-foreground font-medium`;
+      copyButton.className = `copy-code absolute end-3 ${topClass} rounded-md bg-muted border border-border px-2 py-1 text-xs leading-4 text-foreground font-medium`;
       copyButton.innerHTML = copyButtonLabel;
       codeBlock.setAttribute("tabindex", "0");
       codeBlock.appendChild(copyButton);
@@ -412,7 +382,7 @@ const readingStats = [
 
       await navigator.clipboard.writeText(text ?? "");
 
-      button.innerText = "Copied";
+      button.innerText = "已复制";
 
       setTimeout(() => {
         button.innerText = copyButtonLabel;
@@ -460,13 +430,13 @@ const readingStats = [
         alt ? `Image preview: ${alt}` : "Image preview"
       );
       overlay.className =
-        "fixed inset-0 z-50 flex cursor-zoom-out items-center justify-center bg-black/70 backdrop-blur-sm opacity-0 transition-opacity duration-200 motion-reduce:transition-none";
+        "fixed inset-0 z-50 flex cursor-zoom-out items-center justify-center bg-black/75 opacity-0 transition-opacity duration-200 motion-reduce:transition-none";
 
       const closeButton = document.createElement("button");
       closeButton.type = "button";
       closeButton.setAttribute("aria-label", "Close image preview");
       closeButton.className =
-        "absolute end-4 top-4 rounded p-2 text-3xl leading-none text-white";
+        "absolute end-4 top-4 rounded-md p-2 text-3xl leading-none text-white";
       closeButton.innerHTML = "&#10005;";
       closeButton.addEventListener("click", close);
 
@@ -690,4 +660,68 @@ const readingStats = [
   document.addEventListener("astro:after-swap", () =>
     window.scrollTo({ left: 0, top: 0, behavior: "instant" })
   );
+</script>
+
+<script>
+  async function renderMermaidDiagrams() {
+    const article = document.querySelector<HTMLElement>("#article");
+    if (!article) return;
+
+    const rawBlocks = Array.from(article.querySelectorAll("pre")).filter(
+      block =>
+        block.dataset.language === "mermaid" ||
+        block.querySelector("code.language-mermaid")
+    );
+
+    for (const block of rawBlocks) {
+      const code = block.querySelector("code");
+      const source = code?.textContent?.trim();
+      if (!source) continue;
+
+      const diagram = document.createElement("div");
+      diagram.className = "mermaid mermaid-diagram";
+      diagram.dataset.mermaidSource = source;
+      diagram.textContent = source;
+      block.replaceWith(diagram);
+    }
+
+    const diagrams = Array.from(
+      article.querySelectorAll<HTMLElement>(".mermaid-diagram")
+    );
+    if (!diagrams.length) return;
+
+    const { default: mermaid } = await import("mermaid");
+
+    for (const diagram of diagrams) {
+      const source = diagram.dataset.mermaidSource;
+      if (!source) continue;
+      diagram.removeAttribute("data-processed");
+      diagram.textContent = source;
+    }
+
+    const styles = getComputedStyle(document.documentElement);
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: "strict",
+      theme: "base",
+      themeVariables: {
+        background: styles.getPropertyValue("--surface").trim(),
+        primaryColor: styles.getPropertyValue("--surface-subtle").trim(),
+        primaryTextColor: styles.getPropertyValue("--foreground").trim(),
+        primaryBorderColor: styles.getPropertyValue("--border-strong").trim(),
+        lineColor: styles.getPropertyValue("--muted-foreground").trim(),
+        fontFamily: styles.getPropertyValue("--font-app").trim(),
+      },
+    });
+
+    try {
+      await mermaid.run({ nodes: diagrams });
+    } catch (error) {
+      console.error("Unable to render Mermaid diagram", error);
+    }
+  }
+
+  renderMermaidDiagrams();
+  document.addEventListener("astro:page-load", renderMermaidDiagrams);
+  document.addEventListener("theme:change", renderMermaidDiagrams);
 </script>

@@ -17,15 +17,14 @@ const t = useTranslations(Astro.currentLocale);
   <button
     data-button="back-to-top"
     class:list={[
-      "group bg-background relative px-2 py-1",
-      "size-14 rounded-full shadow-xl",
-      "md:h-8 md:w-fit md:rounded-md md:shadow-none md:focus-visible:rounded-none",
-      "md:bg-background/35 md:bg-clip-padding md:backdrop-blur-lg",
+      "group border-border bg-background relative border px-2 py-1",
+      "size-11 rounded-md shadow-sm",
+      "md:h-8 md:w-fit md:shadow-none md:focus-visible:rounded-none",
     ]}
   >
     <span
       id="progress-indicator"
-      class="absolute inset-0 -z-10 block size-14 scale-110 rounded-full bg-transparent md:hidden md:h-8 md:rounded-md"
+      class="absolute inset-0 -z-10 block size-11 rounded-md bg-transparent md:hidden md:h-8"
     ></span>
     <IconArrowLeft class="inline-block rotate-90 md:hidden" />
     <span class="group-hover:text-accent sr-only text-sm md:not-sr-only">

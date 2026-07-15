@@ -4,32 +4,30 @@
   /* ===== Override default Tailwind Typography styles ===== */
   .app-prose {
     @apply prose;
+    font-size: 1.0625rem;
+    line-height: 1.9;
+    letter-spacing: 0;
 
     h1,
     h2,
     h3,
     h4,
     th {
-      @apply text-foreground mb-3 wrap-break-word;
+      @apply text-foreground mb-3 font-semibold wrap-break-word;
     }
 
     h2,
     h3,
     h4 {
       @apply scroll-mt-24;
-
-      &::before {
-        @apply text-accent/65 me-2;
-        content: "#";
-      }
     }
 
     h2 {
-      @apply border-border mt-12 border-b pb-3 text-2xl;
+      @apply border-border mt-14 border-t pt-8 text-2xl;
     }
 
     h3 {
-      @apply mt-9 text-xl not-italic;
+      @apply mt-10 text-xl not-italic;
     }
 
     p,
@@ -43,11 +41,11 @@
     }
 
     p {
-      @apply leading-8;
+      line-height: 1.95;
     }
 
     a {
-      @apply text-foreground hover:text-accent wrap-break-word decoration-dashed underline-offset-4 focus-visible:no-underline;
+      @apply text-foreground decoration-accent/55 hover:text-accent wrap-break-word decoration-1 underline-offset-4 focus-visible:no-underline;
     }
 
     ul {
@@ -60,15 +58,15 @@
     }
 
     li {
-      @apply marker:text-accent;
+      @apply marker:text-accent my-1;
     }
 
     hr {
-      @apply border-border;
+      @apply border-border my-12;
     }
 
     img {
-      @apply border-border mx-auto rounded-lg border shadow-none;
+      @apply border-border mx-auto my-8 rounded-lg border shadow-none;
     }
 
     img[role="button"] {
@@ -80,7 +78,7 @@
     }
 
     figcaption {
-      @apply opacity-75;
+      @apply text-muted-foreground mt-2 text-center text-sm opacity-100;
     }
 
     table {
@@ -88,11 +86,11 @@
 
       th,
       td {
-        @apply border-border border p-2;
+        @apply border-border border-x-0 border-t-0 border-b px-3 py-2.5;
       }
 
       th {
-        @apply py-1.5;
+        @apply bg-surface-subtle py-2 font-semibold;
       }
     }
 
@@ -105,7 +103,7 @@
     }
 
     blockquote {
-      @apply border-s-accent/80 rounded-none border-s-2 bg-transparent py-0 ps-5 wrap-break-word opacity-90;
+      @apply border-s-accent/80 text-muted-foreground rounded-none border-s-2 bg-transparent py-0 ps-5 wrap-break-word opacity-100;
     }
 
     details:not(.callout) {
@@ -117,13 +115,21 @@
     }
 
     pre {
-      @apply focus-visible:outline-accent max-w-full overflow-x-auto rounded-lg shadow-none focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-dashed;
+      @apply border-border focus-visible:outline-accent max-w-full overflow-x-auto rounded-lg border shadow-none focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-dashed;
+    }
+
+    .katex-display {
+      @apply max-w-full overflow-x-auto py-2;
+    }
+
+    .mermaid-diagram {
+      @apply border-border bg-surface my-8 max-w-full overflow-x-auto rounded-lg border p-4 text-center;
     }
   }
 
   /* ===== Code Blocks & Syntax Highlighting ===== */
   .astro-code {
-    @apply outline-border flex border bg-(--shiki-light-bg) text-(--shiki-light) [&_span]:text-(--shiki-light);
+    @apply border-border flex border bg-(--shiki-light-bg) text-(--shiki-light) outline-none [&_span]:text-(--shiki-light);
   }
 
   html[data-theme="dark"] .astro-code {

@@ -21,12 +21,15 @@ const locale = Astro.currentLocale ?? config.site.lang;
 const t = useTranslations(locale);
 ---
 
-<div data-pagefind-ignore class="my-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+<div
+  data-pagefind-ignore
+  class="border-border my-8 grid grid-cols-1 border-y sm:grid-cols-2"
+>
   {
     prevPost && (
       <a
         href={getPostUrl(prevPost.id, prevPost.filePath, locale)}
-        class="glass-card hover:border-accent/60 flex w-full gap-3 p-5 no-underline transition hover:-translate-y-0.5"
+        class="border-border hover:text-accent flex w-full gap-3 border-b p-5 no-underline transition-colors sm:border-e sm:border-b-0"
       >
         <IconArrowLeft class="text-accent mt-1 inline-block flex-none rtl:rotate-180" />
         <div>
@@ -42,7 +45,7 @@ const t = useTranslations(locale);
     nextPost && (
       <a
         href={getPostUrl(nextPost.id, nextPost.filePath, locale)}
-        class="glass-card hover:border-accent/60 flex w-full justify-end gap-3 p-5 text-end no-underline transition hover:-translate-y-0.5 sm:col-start-2"
+        class="hover:text-accent flex w-full justify-end gap-3 p-5 text-end no-underline transition-colors sm:col-start-2"
       >
         <div>
           <span class="text-muted-foreground text-xs tracking-[0.16em]">
