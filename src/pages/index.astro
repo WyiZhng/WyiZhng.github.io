@@ -9,10 +9,8 @@ import Footer from "@/components/Footer.astro";
 import Socials from "@/components/Socials.astro";
 import Card from "@/components/Card.astro";
 import LinkButton from "@/components/LinkButton.astro";
-import Datetime from "@/components/Datetime.astro";
 import { getSortedPosts } from "@/utils/getSortedPosts";
-import { getPostUrl } from "@/utils/getPostPaths";
-import { groupPostsByCategory } from "@/utils/postCategories";
+import { getAssetPath } from "@/utils/withBase";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
 
@@ -23,16 +21,19 @@ const t = useTranslations(locale);
 
 const posts = await getCollection("posts");
 const sortedPosts = getSortedPosts(posts);
-const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
-const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
-const groupedPosts = groupPostsByCategory(sortedPosts);
-const activeGroups = groupedPosts.filter(group => group.posts.length > 0);
+const selectedPosts = sortedPosts.filter(({ data }) => data.featured);
+const featuredPosts = (
+  selectedPosts.length > 0 ? selectedPosts : sortedPosts
+).slice(0, 2);
+const featuredIds = new Set(featuredPosts.map(post => post.id));
+const recentPosts = sortedPosts.filter(post => !featuredIds.has(post.id));
 const homePath = getRelativeLocaleUrl(locale, "");
-const topics = ["前端工程", "Vue", "Git", "AI 工具", "计算机视觉"];
-const stats = [
-  { label: "文章", value: sortedPosts.length },
-  { label: "方向", value: topics.length },
-  { label: "部署", value: "Pages" },
+const topics = [
+  "金融市场与 FICC",
+  "人工智能",
+  "数据分析",
+  "研究方法",
+  "工程实践",
 ];
 ---
 
@@ -44,189 +45,100 @@ const stats = [
     data-home-path={homePath}
     class="app-layout"
   >
-    <section id="hero" class="relative py-12 sm:py-16">
-      <div class="grid gap-6 lg:grid-cols-[1.35fr_0.9fr] lg:items-stretch">
-        <div class="glass-card relative overflow-hidden p-6 sm:p-8">
-          <div
-            class="bg-accent/18 pointer-events-none absolute -top-28 -right-24 h-72 w-72 rounded-full blur-3xl"
-            aria-hidden="true"
-          >
-          </div>
-          <p class="text-accent mb-5 text-sm font-semibold tracking-[0.24em]">
-            FRONTEND · ENGINEERING · AI
-          </p>
-          <h1
-            class="gradient-text max-w-2xl text-5xl leading-tight font-black text-balance sm:text-7xl"
-          >
-            YI's Blog
-          </h1>
-          <p class="text-muted-foreground mt-6 max-w-2xl text-lg leading-8">
-            记录前端工程、AI 工具和项目实践，把学习过程整理成可复用、可回看、可继续生长的技术笔记。
-          </p>
-
-          <div class="mt-8 flex flex-wrap gap-3">
-            <LinkButton
-              href={getRelativeLocaleUrl(locale, "posts")}
-              class="bg-accent text-accent-foreground shadow-accent/20 hover:text-accent-foreground rounded-full px-5 py-2.5 no-underline shadow-lg transition hover:-translate-y-0.5"
-            >
-              开始阅读
-              <IconArrowRight class="inline-block rtl:-rotate-180" />
-            </LinkButton>
-            <LinkButton
-              href={getRelativeLocaleUrl(locale, "search")}
-              class="border-border bg-background/80 hover:text-accent rounded-full border px-5 py-2.5 no-underline backdrop-blur transition hover:-translate-y-0.5"
-            >
-              搜索文章
-            </LinkButton>
-            <a
-              target="_blank"
-              href={`${import.meta.env.BASE_URL.replace(/\/?$/, "/")}rss.xml`}
-              class="border-border bg-background/80 hover:text-accent inline-flex items-center rounded-full border px-3 py-2.5 backdrop-blur transition hover:-translate-y-0.5"
-              aria-label="RSS Feed"
-              title="RSS Feed"
-            >
-              <IconRss
-                width={20}
-                height={20}
-                class="stroke-accent scale-110 stroke-3 rtl:-rotate-90"
-              />
-              <span class="sr-only">RSS Feed</span>
-            </a>
-          </div>
-        </div>
-
-        <aside class="glass-card flex flex-col justify-between gap-6 p-6">
-          <div class="flex items-center gap-4">
-            <img
-              src="/image/avatar.jpeg"
-              alt="WyiZhng avatar"
-              class="border-border shadow-accent/10 size-20 rounded-2xl border object-cover shadow-lg"
-            />
-            <div>
-              <p class="text-muted-foreground text-sm">Hi, I'm</p>
-              <p class="text-2xl font-black">WyiZhng</p>
-              <p class="text-muted-foreground mt-1 text-sm">
-                正在整理前端、工程化和 AI 实践中的问题与答案。
-              </p>
-            </div>
-          </div>
-
-          <ul class="grid grid-cols-3 gap-3">
-            {
-              stats.map(stat => (
-                <li class="border-border bg-muted/45 rounded-xl border p-3 text-center">
-                  <p class="text-accent text-xl font-black">{stat.value}</p>
-                  <p class="text-muted-foreground mt-1 text-xs">{stat.label}</p>
-                </li>
-              ))
-            }
-          </ul>
-
-          <ul class="flex flex-wrap gap-2">
-            {topics.map(topic => <li class="soft-chip">{topic}</li>)}
-          </ul>
-
-          {
-            socials.length > 0 && (
-              <div class="border-border border-t pt-4">
-                <div class="text-muted-foreground mb-2 text-sm">
-                  {t.home.socialLinks}
-                </div>
-                <Socials />
-              </div>
-            )
-          }
-        </aside>
-      </div>
-    </section>
-
     <section
-      id="knowledge-map"
-      class="grid gap-6 pb-10 lg:grid-cols-[17rem_minmax(0,1fr)] lg:items-start"
+      id="hero"
+      class="border-border grid gap-12 border-b py-14 sm:py-20 lg:grid-cols-[minmax(0,1fr)_17rem] lg:items-end lg:py-24"
     >
-      <aside class="glass-card p-4 lg:sticky lg:top-24">
-        <p class="text-accent px-2 text-xs font-semibold tracking-[0.22em]">
-          CATEGORIES
+      <div class="max-w-3xl">
+        <p class="text-accent text-xs font-semibold tracking-[0.18em]">
+          WYIZHNG / RESEARCH NOTES
         </p>
-        <nav class="mt-4 grid gap-1" aria-label="知识库专题">
-          {
-            activeGroups.map(group => (
-              <a
-                href={`#${group.id}`}
-                class="hover:bg-muted/70 hover:text-accent rounded-lg px-3 py-2 text-sm no-underline transition"
-              >
-                <span class="font-semibold">{group.title}</span>
-                <span class="text-muted-foreground ms-2 text-xs">
-                  {group.posts.length}
-                </span>
-              </a>
-            ))
-          }
-        </nav>
-      </aside>
+        <h1
+          class="font-editorial mt-6 text-4xl leading-tight font-semibold text-balance sm:text-6xl"
+        >
+          研究市场、技术与复杂问题
+        </h1>
+        <p class="text-muted-foreground mt-7 max-w-2xl text-lg leading-8">
+          这里记录金融市场、FICC、人工智能、数据分析与研究方法，也保留工程实践和个人成长中的长期笔记。
+        </p>
 
-      <div class="grid gap-5">
-        {
-          activeGroups.map(group => (
-            <section id={group.id} class="glass-card scroll-mt-28 p-5 sm:p-6">
-              <div class="mb-5">
-                <p class="text-accent text-xs font-semibold tracking-[0.22em]">
-                  {group.id.toUpperCase()}
-                </p>
-                <h2 class="mt-1 text-2xl font-black">{group.title}</h2>
-                <p class="text-muted-foreground mt-2 max-w-2xl text-sm leading-7">
-                  {group.description}
-                </p>
-              </div>
+        <ul
+          class="text-muted-foreground mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm"
+          aria-label="研究主题"
+        >
+          {topics.map(topic => <li>{topic}</li>)}
+        </ul>
 
-              <ul class="grid gap-3">
-                {group.posts.map(post => (
-                  <li class="border-border bg-background/65 hover:border-accent/60 rounded-xl border p-4 transition">
-                    <a
-                      href={getPostUrl(post.id, post.filePath, locale)}
-                      class="group block no-underline"
-                    >
-                      <div class="flex flex-wrap items-center gap-3">
-                        <Datetime {...post.data} />
-                        <div class="flex flex-wrap gap-2">
-                          {post.data.tags.slice(0, 3).map(tag => (
-                            <span class="text-muted-foreground bg-muted/60 rounded-full px-2 py-0.5 text-xs">
-                              #{tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                      <h3 class="group-hover:text-accent mt-3 text-lg font-bold transition">
-                        {post.data.title}
-                      </h3>
-                      <p class="text-muted-foreground mt-2 line-clamp-2 text-sm leading-7">
-                        {post.data.description}
-                      </p>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))
-        }
+        <div class="mt-9 flex flex-wrap items-center gap-3">
+          <LinkButton
+            href={getRelativeLocaleUrl(locale, "posts")}
+            class="bg-accent text-accent-foreground hover:text-accent-foreground rounded-md px-4 py-2.5 font-medium no-underline transition-opacity hover:opacity-90"
+          >
+            阅读文章
+            <IconArrowRight class="size-4 rtl:-rotate-180" />
+          </LinkButton>
+          <LinkButton
+            href={getRelativeLocaleUrl(locale, "about")}
+            class="border-border hover:border-border-strong rounded-md border px-4 py-2.5 font-medium no-underline transition-colors"
+          >
+            关于我
+          </LinkButton>
+          <a
+            target="_blank"
+            href={`${import.meta.env.BASE_URL.replace(/\/?$/, "/")}rss.xml`}
+            class="text-muted-foreground hover:text-accent inline-flex size-10 items-center justify-center transition-colors"
+            aria-label="RSS Feed"
+            title="RSS Feed"
+          >
+            <IconRss width={19} height={19} class="stroke-current stroke-2" />
+            <span class="sr-only">RSS Feed</span>
+          </a>
+        </div>
       </div>
+
+      <aside class="border-border border-s ps-6">
+        <img
+          src={getAssetPath("image/avatar.jpeg")}
+          alt="WyiZhng"
+          width="240"
+          height="240"
+          class="aspect-square w-28 rounded-md object-cover sm:w-36 lg:w-full"
+        />
+        <p class="mt-5 text-lg font-semibold">WyiZhng</p>
+        <p class="text-muted-foreground mt-1 text-sm leading-6">
+          持续学习者、技术实践者与研究记录者。
+        </p>
+        {
+          socials.length > 0 && (
+            <div class="mt-3">
+              <Socials />
+            </div>
+          )
+        }
+      </aside>
     </section>
 
     {
       featuredPosts.length > 0 && (
-        <section
-          id="featured"
-          class:list={[
-            "pt-12 pb-8",
-            { "border-border border-b": recentPosts.length > 0 },
-          ]}
-        >
-          <h2 class="text-2xl font-semibold tracking-wide">
-            {t.home.featured}
-          </h2>
-          <ul>
+        <section id="featured" class="border-border border-b py-14 sm:py-18">
+          <div class="mb-7 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p class="text-accent text-xs font-semibold tracking-[0.18em]">
+                01 / EDITOR'S PICK
+              </p>
+              <h2 class="mt-2 text-2xl font-semibold">{t.home.featured}</h2>
+            </div>
+            <LinkButton
+              href={getRelativeLocaleUrl(locale, "posts")}
+              class="text-muted-foreground hover:text-accent text-sm no-underline"
+            >
+              {t.home.allPosts}
+              <IconArrowRight class="size-4 rtl:-rotate-180" />
+            </LinkButton>
+          </div>
+          <ul class="border-border border-t">
             {featuredPosts.map(data => (
-              <Card variant="h3" {...data} />
+              <Card variant="h3" layout="featured" {...data} />
             ))}
           </ul>
         </section>
@@ -235,35 +147,30 @@ const stats = [
 
     {
       recentPosts.length > 0 && (
-        <section id="recent-posts" class="pt-8 pb-8">
-          <div class="mb-4 flex items-end justify-between gap-4">
-            <div>
-              <p class="text-accent text-sm font-semibold tracking-[0.18em]">
-                RECENT NOTES
-              </p>
-              <h2 class="mt-1 text-2xl font-bold tracking-wide">
-                {t.home.recentPosts}
-              </h2>
-            </div>
+        <section id="recent-posts" class="py-14 sm:py-18">
+          <div class="mb-7">
+            <p class="text-accent text-xs font-semibold tracking-[0.18em]">
+              02 / LATEST
+            </p>
+            <h2 class="mt-2 text-2xl font-semibold">{t.home.recentPosts}</h2>
           </div>
-          <ul class="grid gap-4">
+          <ul class="border-border border-t">
             {recentPosts.slice(0, config.posts.perIndex).map(data => (
               <Card variant="h3" {...data} />
             ))}
           </ul>
+          <div class="mt-8">
+            <LinkButton
+              href={getRelativeLocaleUrl(locale, "posts")}
+              class="border-border hover:border-border-strong rounded-md border px-4 py-2.5 text-sm font-medium no-underline transition-colors"
+            >
+              {t.home.allPosts}
+              <IconArrowRight class="size-4 rtl:-rotate-180" />
+            </LinkButton>
+          </div>
         </section>
       )
     }
-
-    <div class="my-10 text-center">
-      <LinkButton
-        href={getRelativeLocaleUrl(locale, "posts")}
-        class="border-border bg-background/80 hover:text-accent rounded-full border px-5 py-2.5 no-underline shadow-sm backdrop-blur transition hover:-translate-y-0.5"
-      >
-        {t.home.allPosts}
-        <IconArrowRight class="inline-block rtl:-rotate-180" />
-      </LinkButton>
-    </div>
   </main>
   <Footer />
 </Layout>
